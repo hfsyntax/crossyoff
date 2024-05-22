@@ -52,7 +52,6 @@ const Navbar = () => {
 
     return (
         <nav id="navbar" className={navbarShadow}>
-            <Link rel="preload" href="/img/logo.png" as="image" />
             <Image src="/img/logo.png" priority={true} draggable="false" width="100" height="100" alt="nav logo"/>
             <h1 id="logo"><Link href="/">CrossyOff</Link></h1>
             <ul id="navbar-container" style={{display: mobileNavbarVisible}}>

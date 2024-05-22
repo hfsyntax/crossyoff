@@ -1,0 +1,289 @@
+body {
+  margin: 0;
+  /* remove body default margin */
+}
+
+/* wrapper to fit all flexboxes */
+#wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+}
+
+#navbar {
+   /* sticky navbar */
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 100px;
+  font-family: sans-serif;
+  background-color: white;
+}
+
+#navbar-container {
+  visibility: visible;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 900px;
+  right: 150px;
+}
+
+#navbar-mobile-icon {
+  display: none;
+  margin-right: 20px;
+}
+
+#navbar-mobile-icon:hover {
+  color: red;
+  cursor: pointer;
+}
+
+#logo {
+  margin-left: 10px;
+  font-size: 30px;
+  user-select: none;
+  z-index: 1;
+}
+
+#logo a {
+  text-decoration: none;
+  color: black;
+}
+
+#logo a:hover {
+  color: red;
+}
+
+.nav-item {
+  position: relative;
+  display: block;
+  list-style: none;
+  width: fit-content;
+  padding: 4px;
+  margin-right: 10px;
+  user-select: none;
+}
+
+.nav-item a {
+  color: black;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.dropdown {
+  position: absolute;
+  display: none;
+  margin-top: 4px;
+  background: lightgray;
+  width: 200px;
+  padding: 8px 4px;
+  z-index: 2;
+}
+
+.nav-item a:hover {
+  color: red;
+  cursor: pointer;
+}
+
+/* page content */
+#content {
+  position: relative;
+  display: flex;
+  margin-top: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 500px;
+  user-select: none;
+  font-family: sans-serif;
+  overflow: auto;
+}
+
+#content.no-height {
+  height: unset;
+}
+
+#content.rule {
+  flex: 1;
+}
+
+#content.column {
+  flex-direction: column;
+}
+
+/* page content components */
+.shadow {
+  box-shadow: 3px 3px 8px -1px gray, -3px 3px 8px -1px gray;
+}
+
+.btn {
+  position: relative;
+  padding: 20px 40px;
+  width: fit-content;
+  background-color: lightgray;
+  transition: background 0.5s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.btn:hover {
+  background: red;
+  border-radius: 12px;
+  color: white !important;
+  cursor: pointer;
+}
+
+.btn:visited {
+  color: inherit;
+}
+
+.rule-box {
+  position: relative;
+  padding: 30px 50px 30px 30px;
+  max-width: 1200px;
+  background-color: lightgray;
+  color: black;
+  border-left: 3px solid red;
+  box-sizing: border-box;
+}
+
+table {
+  background: lightgray;
+  border-collapse: collapse; /* allow borders to be displayed */
+}
+
+thead {
+  height: 50px;
+  border-bottom: 1px solid;
+  box-sizing: border-box;
+}
+
+table thead, table tbody {
+  text-align: left;
+}
+
+table tbody tr {
+  border-bottom:  1px solid black;
+  box-sizing: border-box;
+}
+
+table tbody tr img {
+  height: 50px;
+}
+
+/* clickable icon color */
+table td a {
+  color: black;
+}
+
+table td a:hover {
+  color: red;
+}
+
+/* image inline with text */
+table td:has(img) {
+  display: flex;
+  align-items: center;
+}
+
+/* handle google recaptcha overflow */
+#content:has(form) {
+  overflow-x: hidden;
+}
+
+form input[type="text"], form select {
+  width: 100%;
+  height: 40px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+form span {
+  font-weight: bold;
+} 
+
+form span.error {
+  color: red;
+} 
+
+form span.message {
+  color: green;
+} 
+
+#footer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 100%;
+  left: 0px;
+  height: 50px;
+  width: 100%;
+  background: black;
+  user-select: none;
+}
+
+.footer-item {
+  margin-right: 20px;
+
+}
+
+.footer-item a {
+  text-decoration: none;
+  color: white;
+}
+
+.footer-item a:hover {
+  color: red;
+}
+
+@media (max-width: 1220px) {
+
+  #navbar,
+  #content {
+    width: 100%;
+    transform: none;
+    left: 0%;
+  }
+
+  table {
+    width: 1200px;
+  }
+}
+
+@media (min-width: 1001px) {
+  #navbar-container {
+    display: flex !important;
+  }
+}
+
+/* hamburger menu start */
+@media (max-width: 1000px) {
+  #navbar-container {
+    display: none;
+    position: absolute;
+    left: 0%;
+    top: 100%;
+    margin-top: 0;
+    width: 100%;
+    flex-direction: column;
+    background: white;
+    box-shadow: 3px 3px 8px -1px gray, -3px 3px 8px -1px gray;
+  }
+
+  #navbar-mobile-icon {
+    display: block;
+     /* mobile nav icon end of flexbox */
+    margin-left: auto;
+    margin-right: 10px;
+  }
+}

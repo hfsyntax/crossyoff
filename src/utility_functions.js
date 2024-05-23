@@ -348,7 +348,7 @@ const handleSubmitRun = async (prevState, formData) => {
     // discord webhook embed with form data here
     const webhookID = process.env.WEBHOOK_ID
     const webhookToken = process.env.WEBHOOK_TOKEN
-    const webhookURL = `https://discord.com/api/webhooks/1241192569380016280/FYyyv-2zFe5_1lz1JepNJ0klmOv6t1YR2NObq9FFnfRow2pLSm_T-UAmDT9vzwvCEmsC`
+    const webhookURL = `https://discord.com/api/webhooks/${webhookID}/${webhookToken}`
     const discordEmbed = {
         embeds: [
             {

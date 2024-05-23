@@ -1,6 +1,7 @@
 "use server"
 import mysql from 'mysql2/promise'
 import { revalidatePath } from 'next/cache'
+import { cache } from 'react'
 
 
 const connectToDatabase = async () => {
@@ -28,7 +29,7 @@ if (!global.dbConnection) {
     })
 }
 
-const getMembersCount = async () => {
+const getMembersCount = cache(async () => {
     try {
         const endpoint = "https://discord.com/api/guilds/600865413890310155/preview"
         const token = process.env.BOT_TOKEN
@@ -39,9 +40,9 @@ const getMembersCount = async () => {
         console.error(error)
         return "N/A"
     }
-}
+})
 
-const getTournamentCount = async () => {
+const getTournamentCount = cache(async () => {
     let dbConnection
     try {
         const query = "SELECT COUNT(*) AS count FROM `Crossy Road Tournaments`"
@@ -56,9 +57,9 @@ const getTournamentCount = async () => {
             dbConnection.release()
         }
     }
-}
+})
 
-const getAllTournaments = async () => {
+const getAllTournaments = cache(async () => {
     let dbConnection
     try {
         const query = "SELECT tournament_number, date, tournament_logo,  name, status, winner_country, winner, bracket_url, bracket_url2 FROM `Crossy Road Tournaments` ORDER BY tournament_number DESC"
@@ -73,9 +74,9 @@ const getAllTournaments = async () => {
             dbConnection.release()
         }
     }
-}
+})
 
-const getAllPlayerElo = async () => {
+const getAllPlayerElo = cache(async () => {
     let dbConnection
     try {
         dbConnection = await global.dbConnection.getConnection()
@@ -90,7 +91,7 @@ const getAllPlayerElo = async () => {
             dbConnection.release()
         }
     }
-}
+})
 
 const getPlayerElo = async (search) => {
     const dbConnection = await global.dbConnection?.getConnection().catch(error => {
@@ -179,7 +180,7 @@ const getPlayerChallenges = async (id) => {
     return challenges[0]
 }
 
-const getPlatformTopPlayers = async (platform) => {
+const getPlatformTopPlayers = cache(async (platform) => {
     let dbConnection
     try {
         dbConnection = await global.dbConnection.getConnection()
@@ -194,7 +195,7 @@ const getPlatformTopPlayers = async (platform) => {
             dbConnection.release()
         }
     }
-}
+})
 
 const validateRecaptcha = async (token) => {
     const recaptchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`)
@@ -347,7 +348,7 @@ const handleSubmitRun = async (prevState, formData) => {
     // discord webhook embed with form data here
     const webhookID = process.env.WEBHOOK_ID
     const webhookToken = process.env.WEBHOOK_TOKEN
-    const webhookURL = `https://discord.com/api/webhooks/${webhookID}/${webhookToken}`
+    const webhookURL = `https://discord.com/api/webhooks/1241192569380016280/FYyyv-2zFe5_1lz1JepNJ0klmOv6t1YR2NObq9FFnfRow2pLSm_T-UAmDT9vzwvCEmsC`
     const discordEmbed = {
         embeds: [
             {

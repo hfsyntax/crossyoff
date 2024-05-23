@@ -135,7 +135,7 @@ body {
   border: none;
 }
 
-.btn:hover {
+.btn:hover:enabled {
   background: red;
   border-radius: 12px;
   color: white !important;
@@ -205,6 +205,11 @@ form input[type="text"], form select {
   height: 40px;
   padding: 0 20px;
   box-sizing: border-box;
+}
+
+form input[type="submit"]:disabled {
+  cursor: default;
+  color: inherit;
 }
 
 form span {

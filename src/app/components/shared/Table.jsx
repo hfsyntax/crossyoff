@@ -34,8 +34,8 @@ const Table = ({ rowHeaders, data }) => {
                                                 (row[field] !== "" ?
                                                     // check for a second bracket
                                                     (row["bracket_url2"] ?
-                                                        <> <a href={row["bracket_url"]}><FontAwesomeIcon icon={faTrophy} size="2xl" /></a><a href={row["bracket_url2"]}><FontAwesomeIcon icon={faTrophy} size="2xl" /></a>  </>
-                                                        : <a href={row[field]}><FontAwesomeIcon icon={faTrophy} size="2xl" /></a>)
+                                                        <> <a href={row["bracket_url"]} target="_blank"><FontAwesomeIcon icon={faTrophy} size="2xl" /></a><a href={row["bracket_url2"]} target="_blank"><FontAwesomeIcon icon={faTrophy} size="2xl" /></a>  </>
+                                                        : <a href={row[field]} target="_blank"><FontAwesomeIcon icon={faTrophy} size="2xl" /></a>)
                                                     : <b>N/A</b>) :
                                             // tournament status field
                                             (field === "status" ?
@@ -51,7 +51,7 @@ const Table = ({ rowHeaders, data }) => {
                                                 <><Image width={67} height={50} src={`/img/flags/${row["flag"]}.png`} alt="player_flag"/>&nbsp;{row["name"]}</> 
                                             // video url for rank table by platform
                                             : (field === "video_url" ? 
-                                                <a href={row[field]}><FontAwesomeIcon icon={faVideo} size="2xl" /></a> 
+                                                <a href={row[field]} target="_blank"><FontAwesomeIcon icon={faVideo} size="2xl" /></a> 
                                             // player search combine tournament image with name
                                             : (field === "tournament" && row["img"] ?
                                                 <><Image width={50} height={50} src={`/img/${row["img"]}.png`} alt="tournament_logo"/>&nbsp;{row["tournament"]}</>  

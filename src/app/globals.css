@@ -129,13 +129,16 @@ body {
   position: relative;
   padding: 20px 40px;
   width: fit-content;
-  background-color: lightgray;
-  transition: background 0.5s ease;
+  background: lightgray;
   text-decoration: none;
   border: none;
 }
 
-.btn:hover:enabled {
+.btn:not([disabled]) {
+  transition: background 0.5s ease;
+}
+
+.btn:not([disabled]):hover {
   background: red;
   border-radius: 12px;
   color: white !important;

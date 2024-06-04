@@ -102,7 +102,7 @@ const getPlayerElo = async (search) => {
         return { error: dbConnection.error }
     }
 
-    const query = `SELECT CONVERT(id, CHAR) as id, rank, name, elo, games, won FROM \`Crossy Road Elo Rankings\` WHERE name = '${search}' OR id = '${search}'`
+    const query = `SELECT CONVERT(id, CHAR) as id, rank, flag, name, elo, games, won FROM \`Crossy Road Elo Rankings\` WHERE name = '${search}' OR id = '${search}'`
 
     const player = await dbConnection.execute(query).catch(error => {
         return { error: "database fetch error" }

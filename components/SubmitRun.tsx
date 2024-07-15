@@ -21,17 +21,10 @@ const SubmitRun = () => {
             const formData = new FormData(formElement)
             const formInputs = ["name", "country", "score", "video_url", "platform"]
             const validURLRegex = /^(?:(?:https?):\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]{2,5})+(?:\/[^\s]*)?$/i
-            
-            for (let pair of formData.entries()) {
-                console.log(pair[0]+ ', ' + pair[1]); 
-            }
 
             for (let input of formInputs) {
                 if (!formData.get(input)) {
-                    console.log(`${input} not in formdata`)
                     return setFormState({...formState, error: `${input} cannot be empty`}) 
-                } else {
-                    console.log(`${input} in formdata`)
                 }
             }
 

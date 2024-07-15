@@ -17,7 +17,7 @@ const PlayerSearch = () => {
     const setRecaptchaToken = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         await recaptcha?.current?.executeAsync()
-        const formElement = event.currentTarget as HTMLFormElement
+        const formElement = event.target as HTMLFormElement
         const formData = new FormData(formElement)
         formAction(formData)
         setFormState({

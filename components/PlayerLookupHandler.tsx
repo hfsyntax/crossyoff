@@ -1,10 +1,11 @@
 "use client"
 import { useEffect, useState, useRef, FormEvent } from 'react'
 import { useFormState } from 'react-dom'
-import { handlePlayerSearch } from '@/actions'
+import { handlePlayerSearch, PlayerSearchResult } from '@/actions'
 import Table from './Table'
 import ReCAPTCHA from "react-google-recaptcha"
-const PlayerSearch = () => {
+
+export default function PlayerLookupHandler(): JSX.Element {
     const recaptcha = useRef<ReCAPTCHA | null>(null)
     const [formState, setFormState] = useState({
         dataReceived: false,
@@ -12,7 +13,7 @@ const PlayerSearch = () => {
         text: "Submit"
     })
 
-    const [formResponse, formAction] = useFormState(handlePlayerSearch, null)
+    const [formResponse, formAction] = useFormState<PlayerSearchResult | null, FormData>(handlePlayerSearch, null)
 
     const setRecaptchaToken = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -65,5 +66,3 @@ const PlayerSearch = () => {
             </form>
     )
 }
-
-export default PlayerSearch

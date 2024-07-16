@@ -4,7 +4,7 @@ export const metadata = {
 };
 
 
-const RulesWorlds = () => {
+export default function Worlds(): JSX.Element {
   return (
     <div id="content" className="column rule no-height">
       <h1>CrossyOff Worlds Rules</h1>
@@ -31,5 +31,3 @@ const RulesWorlds = () => {
     </div>
   );
 }
-
-export default RulesWorlds

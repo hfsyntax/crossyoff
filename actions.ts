@@ -1,9 +1,9 @@
 "use server"
 import { revalidatePath } from 'next/cache'
 import { cache } from 'react'
-import { QueryResultRow, sql } from '@vercel/postgres';
+import { Query, QueryResultRow, sql } from '@vercel/postgres';
 
-const capitalizeString = (str: string) => {
+const capitalizeString = (str: string): string => {
     return str
         .toLowerCase()
         .split(" ")
@@ -11,7 +11,7 @@ const capitalizeString = (str: string) => {
         .join(" ")
 }
 
-const getMembersCount = cache(async () => {
+const getMembersCount = cache(async (): Promise<string|number> => {
     try {
         const endpoint = "https://discord.com/api/guilds/600865413890310155/preview"
         const token = process.env.BOT_TOKEN
@@ -24,7 +24,7 @@ const getMembersCount = cache(async () => {
     }
 })
 
-const getTournamentCount = cache(async () => {
+const getTournamentCount = cache(async (): Promise<number> => {
     try {
         const queryResult = await sql`SELECT COUNT(*) AS count FROM crossy_road_tournaments`
         return queryResult?.rowCount && queryResult?.rowCount > 0 ? queryResult?.rows?.[0].count : 0
@@ -34,7 +34,7 @@ const getTournamentCount = cache(async () => {
     }
 })
 
-const getAllTournaments = cache(async () => {
+const getAllTournaments = cache(async (): Promise<QueryResultRow[]> => {
     try {
         const queryResult = await sql`SELECT tournament_number, date, tournament_logo,  name, status, winner_country, winner, bracket_url, bracket_url2 FROM crossy_road_tournaments ORDER BY tournament_number DESC`
         return queryResult?.rowCount && queryResult?.rowCount > 0 ? queryResult?.rows : []
@@ -44,7 +44,7 @@ const getAllTournaments = cache(async () => {
     }
 })
 
-const getAllPlayerElo = cache(async () => {
+const getAllPlayerElo = cache(async (): Promise<QueryResultRow[]> => {
     try {
         const queryResult = await sql`SELECT rank, flag, name, elo, games FROM crossy_road_elo_rankings ORDER BY rank ASC`
         return queryResult?.rowCount && queryResult?.rowCount > 0 ? queryResult?.rows : []
@@ -54,7 +54,7 @@ const getAllPlayerElo = cache(async () => {
     }
 })
 
-const getPlayerElo = async (search: string) => {
+const getPlayerElo = async (search: string): Promise<QueryResultRow[]> => {
     try {
         const capitalizedSearch = capitalizeString(search)
         const queryResult = await sql`SELECT id, rank, flag, name, elo, games, won FROM crossy_road_elo_rankings WHERE name = ${capitalizedSearch} OR id = ${capitalizedSearch}`
@@ -65,7 +65,7 @@ const getPlayerElo = async (search: string) => {
     }
 }
 
-const getPlayerTournaments = async (id: number | string) => {
+const getPlayerTournaments = async (id: number | string): Promise<QueryResultRow[]> => {
     try {
         const queryResult = await sql`SELECT tournaments, tournament, place, score, change, img  FROM crossy_road_games WHERE id = ${id} ORDER BY tournaments DESC`;
         return queryResult?.rowCount && queryResult?.rowCount > 0 ? queryResult?.rows : []
@@ -75,7 +75,7 @@ const getPlayerTournaments = async (id: number | string) => {
     }
 }
 
-const getPlayerChallenges = async (id: number | string) => {
+const getPlayerChallenges = async (id: number | string): Promise<QueryResultRow[]> => {
     try {
         const queryResult = await sql`SELECT
         challenge_id,
@@ -98,7 +98,7 @@ const getPlayerChallenges = async (id: number | string) => {
     }
 }
 
-const getPlatformTopPlayers = cache(async (platform: string) => {
+const getPlatformTopPlayers = cache(async (platform: string): Promise<QueryResultRow[]> => {
     try {
         const queryResult = await sql`SELECT rank, flag, name, score, date, titles, video_url FROM crossy_road_records WHERE platform = ${platform} ORDER BY rank ASC`
         return queryResult?.rowCount && queryResult?.rowCount > 0 ? queryResult?.rows : []
@@ -108,7 +108,7 @@ const getPlatformTopPlayers = cache(async (platform: string) => {
     }
 })
 
-const validateRecaptcha = async (token: string) => {
+const validateRecaptcha = async (token: string): Promise<boolean> => {
     try {
         const recaptchaResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`)
         const responseBody = await recaptchaResponse.json()
@@ -119,7 +119,17 @@ const validateRecaptcha = async (token: string) => {
     }
 }
 
-const handlePlayerSearch = async (prevState: any, formData: FormData) => {
+export type PlayerSearchResult = {
+    error: string;
+    data?: undefined;
+    records?: undefined;
+} | {
+    data: QueryResultRow[];
+    records: QueryResultRow[];
+    error?: undefined;
+}
+
+const handlePlayerSearch = async (prevState: any, formData: FormData): Promise<PlayerSearchResult> => {
     const search = String(formData.get("search"))
     const recaptchaToken = String(formData.get("g-recaptcha-response"))
 
@@ -190,7 +200,15 @@ const handlePlayerSearch = async (prevState: any, formData: FormData) => {
     return { data: playerSearch, records: playerTournaments }
 }
 
-const handleSubmitRun = async (prevState: any, formData: FormData) => {
+export type HighscoreFormResult = {
+    error: string;
+    success?: undefined;
+} | {
+    success: string;
+    error?: undefined;
+}
+
+const handleSubmitRun = async (prevState: any, formData: FormData): Promise<HighscoreFormResult> => {
     const formInputs = ["name", "country", "score", "video_url", "platform"]
     const validURLRegex = /^(?:(?:https?):\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]{2,5})+(?:\/[^\s]*)?$/i
 

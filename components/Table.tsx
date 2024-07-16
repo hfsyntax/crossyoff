@@ -2,7 +2,8 @@ import Image from "next/image"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrophy, faVideo } from "@fortawesome/free-solid-svg-icons"
 import { QueryResultRow } from "@vercel/postgres"
-const Table = ({ rowHeaders, data }: {rowHeaders: string[], data: QueryResultRow[]}) => {
+
+export default function Table({ rowHeaders, data }: {rowHeaders: string[], data: QueryResultRow[]}): JSX.Element {
     return (
         <table>
             <thead>
@@ -67,5 +68,3 @@ const Table = ({ rowHeaders, data }: {rowHeaders: string[], data: QueryResultRow
         </table>
     )
 }
-
-export default Table

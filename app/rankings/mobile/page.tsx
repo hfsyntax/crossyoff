@@ -9,7 +9,7 @@ export const metadata = {
 
 export const revalidate = 86400
 
-const RankingsMobile = async () => {
+export default async function Mobile(): Promise<JSX.Element> {
     const players = await getPlatformTopPlayers("mobile")
     return (
         <div id="content" className="column no-height">
@@ -29,5 +29,3 @@ const RankingsMobile = async () => {
         </div>
     )
 }
-
-export default RankingsMobile

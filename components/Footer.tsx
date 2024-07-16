@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {faDiscord, faYoutube, faTwitch, faTwitter} from "@fortawesome/free-brands-svg-icons"
 import {faTrophy} from "@fortawesome/free-solid-svg-icons"
-const Footer = () => {
+
+export default function Footer(): JSX.Element {
     return (
         <div id="footer">
             <span className="footer-item" style={{color: 'white'}}>
@@ -35,5 +36,3 @@ const Footer = () => {
         </div>
     )
 }
-
-export default Footer

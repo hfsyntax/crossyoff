@@ -9,7 +9,7 @@ export const metadata = {
 
 export const revalidate = 86400
 
-const RankingsPC = async () => {
+export default async function PC(): Promise<JSX.Element> {
     const players = await getPlatformTopPlayers("PC")
     return (
         <div id="content" className="column no-height">
@@ -29,5 +29,3 @@ const RankingsPC = async () => {
         </div>
     )
 }
-
-export default RankingsPC

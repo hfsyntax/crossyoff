@@ -10,7 +10,7 @@ export const metadata = {
 
 export const revalidate = 86400
 
-export default async function Home() {
+export default async function Home(): Promise<JSX.Element> {
   const tournaments = await getTournamentCount()
   const members = await getMembersCount()
   return (

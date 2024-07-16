@@ -9,7 +9,7 @@ export const metadata = {
 
 export const revalidate = 1800
 
-const RankingsElo = async () => {
+export default async function Elo(): Promise<JSX.Element> {
     const players = await getAllPlayerElo()
     return (
         <div id="content" className="column">
@@ -29,5 +29,3 @@ const RankingsElo = async () => {
         </div>
     )
 }
-
-export default RankingsElo

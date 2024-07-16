@@ -1,9 +1,10 @@
 "use client"
 import { useRef, useState, useEffect, FormEvent } from 'react'
 import { useFormState } from 'react-dom'
-import { handleSubmitRun } from '@/actions'
+import { HighscoreFormResult, handleSubmitRun } from '@/actions'
 import ReCAPTCHA from 'react-google-recaptcha'
-const SubmitRun = () => {
+
+export default function SubmitRunHandler(): JSX.Element {
     const recaptcha = useRef<ReCAPTCHA | null>(null)
     const currentForm = useRef<HTMLFormElement>(null)
     const [formState, setFormState] = useState({
@@ -11,7 +12,7 @@ const SubmitRun = () => {
         disabled: false,
         text: "Submit"
     })
-    const [formResponse, formAction] = useFormState(handleSubmitRun, null)
+    const [formResponse, formAction] = useFormState<HighscoreFormResult | null, FormData>(handleSubmitRun, null)
 
     const setRecaptchaToken = async (event: FormEvent<HTMLFormElement>) => {
         try {
@@ -96,5 +97,3 @@ const SubmitRun = () => {
         </form>
     )
 }
-
-export default SubmitRun

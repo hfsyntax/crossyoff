@@ -8,7 +8,7 @@ export const metadata = {
 
 export const revalidate = 86400
 
-const Schedule = async () => {
+export default async function Schedule(): Promise<JSX.Element> {
 
   const tournaments = await getAllTournaments()
 
@@ -22,5 +22,3 @@ const Schedule = async () => {
     </div>
   )
 }
-
-export default Schedule

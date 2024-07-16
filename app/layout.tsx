@@ -8,10 +8,10 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "CrossyOff - Home",
+    default: "CrossyOff - A competitive Crossy Road community.",
     template: "CrossyOff - %s"
   },
-  description: "Website for the Competitive Crossy Road Community",
+  description: "A website storing infromation on the Competitive Crossy Road Community and top Crossy Road players.",
   applicationName: "CrossyOff",
   referrer: "origin-when-cross-origin",
   keywords: ["CrossyOff", "crossyoff", "crossyoff crossyroad", "ccrc", "Crossy Road", "Crossy Road Discord", "Crossy Road Community", "Crossy Road Server", "Crossy Road Highscores", "Crossy Road Rankings", "Crossy Road League"],
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://crossyoff.vercel.app"),
   openGraph: {
     title: "CrossyOff - Home",
-    description: "Website for the Competitive Crossy Road Community",
+    description: "A website storing infromation on the Competitive Crossy Road Community and top Crossy Road players.",
     type: "website",
     locale: "en_US",
     url: "https://crossyoff.vercel.app",

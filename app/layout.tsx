@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   publisher: "Noah Kaiser",
   metadataBase: new URL("https://crossyoff.vercel.app"),
   openGraph: {
-    title: "CrossyOff - Home",
+    title: "CrossyOff - A competitive Crossy Road community.",
     description: "A website storing infromation on the Competitive Crossy Road Community and top Crossy Road players.",
     type: "website",
     locale: "en_US",

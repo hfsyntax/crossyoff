@@ -3,10 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { getMembersCount, getTournamentCount } from '@/actions';
 
-export const metadata = {
-  description: "Home page for CrossyOff",
-};
-
 export const revalidate = 86400
 
 export default async function Home(): Promise<JSX.Element> {

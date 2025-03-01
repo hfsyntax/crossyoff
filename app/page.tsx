@@ -1,37 +1,48 @@
-import styles from './page.module.css'
-import Image from 'next/image'
-import Link from 'next/link';
-import { getMembersCount, getTournamentCount } from '@/actions';
-
-export const revalidate = 86400
+import Image from "next/image"
+import Link from "next/link"
+import { getMembersCount, getTournamentCount } from "@/actions"
 
 export default async function Home(): Promise<JSX.Element> {
   const tournaments = await getTournamentCount()
   const members = await getMembersCount()
   return (
-    <div className={styles.content}>
-      <Image priority={true} sizes='50%, 100%' fill={true} className={styles.cover_img} src="/img/main.png" alt='home logo' />
-      <div className={styles.cover_txt_container}>
-        <h2 className={styles.cover_greeting}>
+    <div className="relative left-0 mt-0 flex min-h-[500px] w-full flex-[1_1] transform-none select-none flex-col overflow-auto font-sans md:mt-[150px] md:flex-initial md:flex-row xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
+      <Image
+        priority={true}
+        sizes="(max-width: 768px) 100%, 50%"
+        fill={true}
+        className="!relative mt-[150px] w-full object-contain md:mb-auto md:mt-auto md:!w-1/2"
+        src="/img/main.png"
+        alt="home logo"
+      />
+      <div className="relative flex w-full flex-col md:w-1/2">
+        <h2 className="w-full pb-5 pr-5 pt-5 text-center text-[40px] font-bold md:ml-[100px] md:w-[calc(100%_-_120px)] md:text-start">
           Hey, thanks for <span style={{ color: "red" }}>crossing</span> by!
         </h2>
-        <p className={styles.cover_description}>CrossyOff is a fan-made Crossy Road platform which allows players at
+        <p className="w-full pb-5 pr-5 pt-5 text-center text-base md:ml-[100px] md:w-[calc(100%_-_120px)] md:text-start">
+          CrossyOff is a fan-made Crossy Road platform which allows players at
           any level to compete, learn and meet new friends along the way.
         </p>
-        <Link href={"https://discord.gg/7Y3rNBT"} target="_blank" className="btn" style={{ left: "100px", top: "50px" }}>
+        <Link
+          href={"https://discord.gg/7Y3rNBT"}
+          target="_blank"
+          className="relative mb-[50px] ml-auto mr-auto mt-[50px] w-fit border-none bg-red-500 pb-5 pl-10 pr-10 pt-5 font-bold text-white no-underline duration-500 ease-in-out hover:rounded-xl lg:left-[100px] lg:ml-0 lg:mr-0"
+        >
           Join the Community
         </Link>
-        <div className={styles.cover_stats_container}>
-            <div className={styles.stat}>
-                <span>{tournaments}</span><br />
-                <span>Tournaments</span>
-            </div>
-            <div className={styles.stat}>
-                <span>{members}</span><br />
-                <span>Members</span>
-            </div>
+        <div className="relative mb-4 mt-auto w-full text-center lg:ml-[100px] lg:w-[calc(100%_-_100px)] lg:text-left">
+          <div className="mr-10 inline-block">
+            <span className="text-[50px]">{tournaments}</span>
+            <br />
+            <span className="text-xl">Tournaments</span>
+          </div>
+          <div className="mr-10 inline-block">
+            <span className="text-[50px]">{members}</span>
+            <br />
+            <span className="text-xl">Members</span>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

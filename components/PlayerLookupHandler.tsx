@@ -83,15 +83,14 @@ export default function PlayerLookupHandler(): JSX.Element {
         name="search"
         placeholder="Enter full name or Discord id"
         required
-        className="box-border h-10 w-full pb-0 pl-5 pr-5 pt-0"
+        className="mb-2 ml-1 mr-1 box-border h-10 w-[300px] border border-black pb-0 pl-5 pr-5 pt-0 outline-none focus:border-red-500 sm:w-[350px] xl:ml-0 xl:mr-0 xl:w-[400px]"
       ></input>
       <br />
       <input
         type="submit"
-        className="relative w-fit border-none bg-red-500 pb-5 pl-10 pr-10 pt-5 text-white no-underline enabled:cursor-pointer enabled:duration-500 enabled:ease-in-out enabled:hover:rounded-xl"
+        className="relative ml-1 w-fit border-none bg-red-500 pb-2 pl-4 pr-4 pt-2 text-white no-underline hover:rounded-xl hover:bg-slate-100 hover:text-red-500 enabled:cursor-pointer enabled:duration-500 enabled:ease-in-out md:pb-3 md:pl-5 md:pr-5 md:pt-3 lg:pb-4 lg:pl-9 lg:pr-9 lg:pt-4 xl:ml-0"
         name="submit-btn"
         value={formState.text}
-        style={{ width: "100%" }}
         disabled={formState.disabled}
       />
       <ReCAPTCHA

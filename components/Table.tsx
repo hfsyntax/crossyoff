@@ -11,7 +11,7 @@ export default function Table({
   data: QueryResultRow[]
 }): JSX.Element {
   return (
-    <table className="mt-3 w-[1200px] border-collapse bg-[#d3d3d3] xl:w-auto">
+    <table className="mt-3 w-[1200px] border-collapse bg-slate-200 xl:w-auto">
       <thead className="box-border h-[50px] border-b-[1px] border-solid border-b-black text-left">
         <tr key={"rowHeaders"}>
           {rowHeaders.map((header, index) => (

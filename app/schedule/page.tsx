@@ -11,7 +11,9 @@ export default async function Schedule(): Promise<JSX.Element> {
 
   return (
     <div className="relative left-0 mb-3 mt-[150px] flex h-0 w-full flex-grow transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
-      <h1 className="mb-3 mt-3 text-[32px]">CrossyOff Tournament Schedule</h1>
+      <h1 className="mb-3 ml-1 mt-3 text-2xl sm:text-3xl xl:ml-0 xl:text-[32px]">
+        CrossyOff Tournament Schedule
+      </h1>
       {tournaments.length === 0 ? (
         <b style={{ color: "red" }}>Failed to get tournaments</b>
       ) : (

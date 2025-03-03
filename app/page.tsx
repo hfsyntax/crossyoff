@@ -26,7 +26,7 @@ export default async function Home(): Promise<JSX.Element> {
         <Link
           href={"https://discord.gg/7Y3rNBT"}
           target="_blank"
-          className="relative mb-[50px] ml-auto mr-auto mt-[50px] w-fit border-none bg-red-500 pb-5 pl-10 pr-10 pt-5 font-bold text-white no-underline duration-500 ease-in-out hover:rounded-xl lg:left-[100px] lg:ml-0 lg:mr-0"
+          className="relative mb-[50px] ml-auto mr-auto mt-[50px] w-fit border-none bg-red-500 pb-5 pl-10 pr-10 pt-5 font-bold text-white no-underline duration-500 ease-in-out hover:rounded-xl hover:bg-slate-100 hover:text-red-500 lg:left-[100px] lg:ml-0 lg:mr-0"
         >
           Join the Community
         </Link>

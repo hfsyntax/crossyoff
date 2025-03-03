@@ -7,8 +7,10 @@ export const metadata = {
 export default function Lcs(): JSX.Element {
   return (
     <div className="relative left-0 mt-[150px] flex w-full flex-[1] transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
-      <h1 className="mb-3 mt-3 text-[32px]">Last Chicken Standing Rules</h1>
-      <h2 className="mb-4 mt-4 text-2xl">1. Matchmaking</h2>
+      <h1 className="mb-3 ml-1 mt-3 text-2xl sm:text-3xl xl:ml-0 xl:text-[32px]">
+        Last Chicken Standing Rules
+      </h1>
+      <h2 className="mb-4 ml-1 mt-4 text-2xl xl:ml-0">1. Matchmaking</h2>
       <p className="relative mb-4 mt-4 box-border max-w-[1200px] border-l-[3px] border-red-500 bg-[#d3d3d3] pb-[30px] pl-[30px] pr-[50px] pt-[30px] text-black">
         Players highest score at the end of each round will be compared against
         all other players highest scores and their elo will be affected. Elo is
@@ -24,7 +26,7 @@ export default function Lcs(): JSX.Element {
         percentage of those who receive strikes will be, the amount of time
         between runs, and the amount of time alloted for each round.
       </p>
-      <h2 className="mb-4 mt-4 text-2xl">2. Moderation</h2>
+      <h2 className="mb-4 ml-1 mt-4 text-2xl xl:ml-0">2. Moderation</h2>
       <p className="relative mb-4 mt-4 box-border max-w-[1200px] border-l-[3px] border-red-500 bg-[#d3d3d3] pb-[30px] pl-[30px] pr-[50px] pt-[30px] text-black">
         A Referee must be present to monitor each match. Referees participating
         in tournaments agree to advise each players match without bias and are
@@ -34,7 +36,9 @@ export default function Lcs(): JSX.Element {
         have 24 hours to respond to the issue. If no response is given, the
         Referees decision is final.
       </p>
-      <h2 className="mb-4 mt-4 text-2xl">3. Platforms/Fair Play</h2>
+      <h2 className="mb-4 ml-1 mt-4 text-2xl xl:ml-0">
+        3. Platforms/Fair Play
+      </h2>
       <p className="relative mb-4 mt-4 box-border max-w-[1200px] border-l-[3px] border-red-500 bg-[#d3d3d3] pb-[30px] pl-[30px] pr-[50px] pt-[30px] text-black">
         Each player agrees to use either the Crossy Road Application on the
         Windows Store or iOS/Android stable. Third party clients/software such
@@ -52,13 +56,15 @@ export default function Lcs(): JSX.Element {
           dead.
         </b>
       </p>
-      <h2 className="mb-4 mt-4 text-2xl">4. Withdrawl/Play Period</h2>
+      <h2 className="mb-4 ml-1 mt-4 text-2xl xl:ml-0">
+        4. Withdrawl/Play Period
+      </h2>
       <p className="relative mb-4 mt-4 box-border max-w-[1200px] border-l-[3px] border-red-500 bg-[#d3d3d3] pb-[30px] pl-[30px] pr-[50px] pt-[30px] text-black">
         Players have the ability to withdraw themselves from the tournament
         whenever fit, however their funds contributed will be non-refundable and
         their ELO will still be affected.
       </p>
-      <h2 className="mb-4 mt-4 text-2xl">5. Ties</h2>
+      <h2 className="mb-4 ml-1 mt-4 text-2xl xl:ml-0">5. Ties</h2>
       <p className="relative mb-4 mt-4 box-border max-w-[1200px] border-l-[3px] border-red-500 bg-[#d3d3d3] pb-[30px] pl-[30px] pr-[50px] pt-[30px] text-black">
         Players can only qualify for a tie if the highest score is the same for
         two or more players after a round. When a tie occurs, players will have

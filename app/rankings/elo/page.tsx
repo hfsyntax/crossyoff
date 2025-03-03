@@ -15,7 +15,7 @@ export default async function Elo(): Promise<JSX.Element> {
         CrossyOff Elo Rankings
       </h1>
       {players.length === 0 ? (
-        <b style={{ color: "red" }}>Failed to get elo rankings</b>
+        <b className="text-red-500">Failed to get elo rankings</b>
       ) : (
         <>
           <Link

@@ -15,7 +15,7 @@ export default async function Schedule(): Promise<JSX.Element> {
         CrossyOff Tournament Schedule
       </h1>
       {tournaments.length === 0 ? (
-        <b style={{ color: "red" }}>Failed to get tournaments</b>
+        <b className="text-red-500">Failed to get tournaments</b>
       ) : (
         <Table
           rowHeaders={["#", "date", "Name", "Status", "Winner", "Bracket"]}

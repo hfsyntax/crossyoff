@@ -17,7 +17,7 @@ export default async function Home(): Promise<JSX.Element> {
       />
       <div className="relative flex w-full flex-col md:w-1/2">
         <h2 className="w-full pb-5 pr-5 pt-5 text-center text-[40px] font-bold md:ml-[100px] md:w-[calc(100%_-_120px)] md:text-start">
-          Hey, thanks for <span style={{ color: "red" }}>crossing</span> by!
+          Hey, thanks for <span className="text-red-500">crossing</span> by!
         </h2>
         <p className="w-full pb-5 pr-5 pt-5 text-center text-base md:ml-[100px] md:w-[calc(100%_-_120px)] md:text-start">
           CrossyOff is a fan-made Crossy Road platform which allows players at

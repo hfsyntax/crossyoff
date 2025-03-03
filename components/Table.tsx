@@ -42,15 +42,13 @@ export default function Table({
                 // color of row text
                 <td
                   key={field}
-                  className="has-[img]:flex has-[img]:items-center"
-                  style={{
-                    color:
-                      row[field] === "Completed"
-                        ? "green"
-                        : row[field] === "In-Progress"
-                          ? "coral"
-                          : "inherit",
-                  }}
+                  className={`has-[img]:flex has-[img]:items-center ${
+                    row[field] === "Completed"
+                      ? "text-green-500"
+                      : row[field] === "In-Progress"
+                        ? "text-[coral]"
+                        : "text-[inherit]"
+                  }`}
                 >
                   {
                     // if row is date convert to string

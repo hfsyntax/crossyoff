@@ -15,7 +15,7 @@ export default async function Mobile(): Promise<JSX.Element> {
         CrossyOff Mobile Rankings
       </h1>
       {players.length === 0 ? (
-        <b style={{ color: "red" }}>Failed to get mobile rankings</b>
+        <b className="text-red-500">Failed to get mobile rankings</b>
       ) : (
         <>
           <Link

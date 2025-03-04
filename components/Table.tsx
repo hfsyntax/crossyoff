@@ -1,171 +1,167 @@
-import Image from "next/image"
+"use client"
+import type { CSSProperties } from "react"
+import type { Size } from "react-virtualized-auto-sizer"
+import type { QueryResultRow } from "@vercel/postgres"
+import { FixedSizeList } from "react-window"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrophy, faVideo } from "@fortawesome/free-solid-svg-icons"
-import { QueryResultRow } from "@vercel/postgres"
+import AutoSizer from "react-virtualized-auto-sizer"
+import Link from "next/link"
+import Image from "next/image"
 
-export default function Table({
-  rowHeaders,
+const nonDisplayedCols = [
+  "flag",
+  "id",
+  "tournament_logo",
+  "bracket_url2",
+  "winner_country",
+]
+const fragmentColumns = ["name", "video_url", "winner", "bracket_url"]
+
+function Row({
+  index,
+  style,
+  columns,
   data,
 }: {
-  rowHeaders: string[]
-  data: QueryResultRow[]
-}): JSX.Element {
+  index: number
+  style: CSSProperties
+  columns: string[]
+  data: any
+}) {
+  const row = data[index]
   return (
-    <table className="mt-3 w-[1200px] border-collapse bg-slate-200 xl:w-auto">
-      <thead className="box-border h-[50px] border-b-[1px] border-solid border-b-black text-left">
-        <tr key={"rowHeaders"}>
-          {rowHeaders.map((header, index) => (
-            <th key={index}>{header === "#" ? <>&nbsp;{header}</> : header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="text-left">
-        {data.map((row, index) => (
-          <tr
-            key={index}
-            className="box-border border-b-[1px] border-solid border-b-black"
-          >
-            {Object.keys(row)
-              // filter out tournament number to combine fields (keep header to fields ratio)
-              .filter(
-                (field) =>
-                  ![
-                    "tournament_logo",
-                    "winner_country",
-                    "bracket_url2",
-                    "flag",
-                    "img",
-                    "id",
-                  ].includes(field),
-              )
-              .map((field) => (
-                // color of row text
-                <td
-                  key={field}
-                  className={`has-[img]:flex has-[img]:items-center ${
-                    row[field] === "Completed"
-                      ? "text-green-500"
-                      : row[field] === "In-Progress"
-                        ? "text-[coral]"
-                        : "text-[inherit]"
-                  }`}
-                >
-                  {
-                    // if row is date convert to string
-                    row[field] instanceof Date ? (
-                      row[field].toLocaleDateString()
-                    ) : // combine tournament name and logo to the same field
-                    field === "name" && row["tournament_logo"] ? (
-                      <>
-                        <Image
-                          width={50}
-                          height={50}
-                          src={`/img/${row["tournament_logo"]}.png`}
-                          alt="tournament logo"
-                          className="h-[50px]"
-                        />
-                        &nbsp;{row[field]}
-                      </>
-                    ) : // bracket url
-                    field === "bracket_url" ? (
-                      row[field] !== "" ? (
-                        // check for a second bracket
-                        row["bracket_url2"] ? (
-                          <>
-                            {" "}
-                            <a
-                              href={row["bracket_url"]}
-                              target="_blank"
-                              className="text-black hover:text-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrophy} size="2xl" />
-                            </a>
-                            <a
-                              href={row["bracket_url2"]}
-                              target="_blank"
-                              className="text-black hover:text-red-500"
-                            >
-                              <FontAwesomeIcon icon={faTrophy} size="2xl" />
-                            </a>{" "}
-                          </>
-                        ) : (
-                          <a
-                            href={row[field]}
-                            target="_blank"
-                            className="text-black hover:text-red-500"
-                          >
-                            <FontAwesomeIcon icon={faTrophy} size="2xl" />
-                          </a>
-                        )
-                      ) : (
-                        <b>N/A</b>
-                      )
-                    ) : // tournament status field
-                    field === "status" ? (
-                      <b>{row[field]}</b>
-                    ) : // tournament winner field
-                    field === "winner" && row["tournament_number"] ? (
-                      row["winner_country"] !== "" ? (
-                        <>
-                          <Image
-                            width={50}
-                            height={50}
-                            src={`/img/flags/${row["winner_country"]}1.png`}
-                            alt="winner_country"
-                            className="h-[50px]"
-                          />
-                          <b>&nbsp;{row[field]}</b>
-                        </>
-                      ) : (
-                        <b>{row[field]}</b>
-                      )
-                    ) : // tournament number or player rank
-                    field === "tournament_number" ||
-                      field === "rank" ||
-                      field === "tournaments" ? (
-                      <b>&nbsp;{row[field]}</b>
-                    ) : // combine player name and country flag
-                    field === "name" && row["flag"] ? (
-                      <>
-                        <Image
-                          width={67}
-                          height={50}
-                          src={`/img/flags/${row["flag"]}.png`}
-                          alt="player_flag"
-                          className="h-[50px]"
-                        />
-                        &nbsp;{row["name"]}
-                      </>
-                    ) : // video url for rank table by platform
-                    field === "video_url" ? (
-                      <a
-                        href={row[field]}
-                        target="_blank"
-                        className="text-black hover:text-red-500"
-                      >
-                        <FontAwesomeIcon icon={faVideo} size="2xl" />
-                      </a>
-                    ) : // player search combine tournament image with name
-                    field === "tournament" && row["img"] ? (
-                      <>
-                        <Image
-                          width={50}
-                          height={50}
-                          src={`/img/${row["img"]}.png`}
-                          alt="tournament_logo"
-                          className="h-[50px]"
-                        />
-                        &nbsp;{row["tournament"]}
-                      </>
-                    ) : (
-                      row[field]
-                    )
+    <div style={{ ...style }} className="flex items-center bg-slate-200">
+      {Object.keys(row)
+        .filter((field) => !nonDisplayedCols.includes(field))
+        .map((field: string, rowIndex: number) =>
+          index === 0 || !fragmentColumns.includes(field) ? (
+            <span
+              key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
+              className={`relative inline-block text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl ${["Player", "Name", "Winner"].includes(columns[rowIndex]) ? "flex-[2.5] md:flex-[2]" : row[field] instanceof Date || columns[rowIndex] === "date" ? "flex-[2] md:flex-[1]" : columns[rowIndex] === "#" ? "flex-[0.5]" : "flex-[1]"} pl-2 ${
+                index === 0
+                  ? "bg-slate-700 text-white"
+                  : row[field] === "Completed"
+                    ? "text-green-700"
+                    : row[field] === "In-Progress"
+                      ? "text-[coral]"
+                      : "text-black"
+              } !leading-[50px]`}
+            >
+              {index === 0
+                ? columns[rowIndex]
+                : row[field] instanceof Date
+                  ? row[field].toLocaleDateString()
+                  : row[field]}
+            </span>
+          ) : ["video_url", "bracket_url"].includes(field) ? (
+            <div
+              className="flex flex-[1]"
+              key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
+            >
+              {(row["bracket_url"] || row["video_url"]) && (
+                <Link
+                  href={
+                    row["video_url"]
+                      ? row["video_url"]
+                      : row["bracket_url"]
+                        ? row["bracket_url"]
+                        : "#"
                   }
-                </td>
-              ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                  target="_blank"
+                  className="hover:text-red-500"
+                >
+                  <FontAwesomeIcon
+                    icon={row["bracket_url"] ? faTrophy : faVideo}
+                    size="2xl"
+                    className="link-icon relative inline-block flex-[1]"
+                    preserveAspectRatio="xMinYMin meet"
+                  />
+                </Link>
+              )}
+              {row["bracket_url2"] && (
+                <Link
+                  href={row["bracket_url2"] ? row["bracket_url2"] : "#"}
+                  target="_blank"
+                  className="hover:text-red-500"
+                >
+                  <FontAwesomeIcon
+                    icon={faTrophy}
+                    size="2xl"
+                    className="link-icon relative inline-block flex-[1]"
+                    preserveAspectRatio="xMinYMin meet"
+                  />
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div
+              key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
+              className={`relative flex h-full flex-[2.5] items-center pl-2 leading-[50px] md:flex-[2]`}
+            >
+              <Image
+                width={50}
+                height={50}
+                src={
+                  row["flag"]
+                    ? `/img/flags/${row["flag"]}.png`
+                    : field === "winner"
+                      ? row["winner_country"]
+                        ? `/img/flags/${row["winner_country"]}.png`
+                        : "/img/flags/un.png"
+                      : field === "name"
+                        ? row["tournament_logo"]
+                          ? `/img/${row["tournament_logo"]}.png`
+                          : "/img/flags/un.png"
+                        : "/img/flags/un.png"
+                }
+                alt="profile_pic"
+                className="h-auto w-[25px] md:w-[30px] xl:w-[40px]"
+              />
+
+              <span className="ml-1 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
+                {row[field]}
+              </span>
+            </div>
+          ),
+        )}
+    </div>
+  )
+}
+
+export default function FixedTable({
+  data,
+  columns,
+  minWidth,
+}: {
+  data: QueryResultRow[]
+  columns: string[]
+  minWidth?: number
+}) {
+  return (
+    <div className="mt-5 h-full w-full">
+      <div className={`ml-auto mr-auto h-full ${minWidth && "overflow-auto"}`}>
+        <AutoSizer>
+          {({ height, width }: Size) => (
+            <FixedSizeList
+              height={height}
+              itemCount={data.length}
+              itemSize={50}
+              width={width}
+              style={{ minWidth: minWidth ? minWidth : 0 }}
+            >
+              {({ index, style }) => (
+                <Row
+                  index={index}
+                  style={style}
+                  columns={columns}
+                  data={data}
+                />
+              )}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
+      </div>
+    </div>
   )
 }

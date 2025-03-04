@@ -2,14 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* remove body default margin */
 body {
   margin: 0;
-  /* remove body default margin */
 }
 
-/* page content components */
+/* custom shadow sticky nav on scroll */
 .shadow-custom {
   box-shadow:
     3px 3px 8px -1px gray,
     -3px 3px 8px -1px gray;
+}
+
+/* responsively set fontawesome link icons */
+.link-icon {
+  font-size: 12px !important;
+}
+
+@media (min-width: 640px) {
+  .link-icon {
+    font-size: 14px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .link-icon {
+    font-size: 20px !important;
+  }
+}
+
+@media (min-width: 1001px) {
+  .link-icon {
+    font-size: 24px !important;
+  }
+}
+
+@media (min-width: 1221px) {
+  .link-icon {
+    font-size: 32px !important;
+  }
 }

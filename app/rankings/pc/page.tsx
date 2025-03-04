@@ -10,7 +10,7 @@ export const metadata = {
 export default async function PC(): Promise<JSX.Element> {
   const players = await getPlatformTopPlayers("PC")
   return (
-    <div className="relative left-0 mt-[150px] flex w-full transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
+    <div className="relative left-0 mt-[150px] flex h-0 w-full flex-grow transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
       <h1 className="mb-3 ml-1 mt-3 text-2xl sm:text-3xl xl:ml-0 xl:text-[32px]">
         CrossyOff PC Rankings
       </h1>
@@ -25,8 +25,8 @@ export default async function PC(): Promise<JSX.Element> {
             Submit Run
           </Link>
           <Table
-            rowHeaders={["#", "Player", "Score", "Date", "Titles", "Video"]}
-            data={players}
+            data={[{ ...players[0] }, ...players]}
+            columns={["#", "Player", "Score", "Date", "Titles", "Video"]}
           />
         </>
       )}

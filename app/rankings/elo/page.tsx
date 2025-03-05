@@ -1,5 +1,3 @@
-"use cache"
-
 import { getAllPlayerElo } from "@/actions"
 import Table from "@/components/Table"
 import PlayerLookupHandler from "@/components/PlayerLookupHandler"

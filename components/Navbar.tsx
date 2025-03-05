@@ -7,11 +7,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 
 export default function Navbar() {
-  const [dropdownsVisible, setDropdownsVisible] = useState({
+  const [dropdownsVisible, setDropdownsVisible] = useState<{
+    ranks: "block" | "none"
+    rules: "block" | "none"
+  }>({
     ranks: "none",
     rules: "none",
   })
-  const [mobileNavbarVisible, setMobileNavbarVisible] = useState("none")
+  const [mobileNavbarVisible, setMobileNavbarVisible] = useState<
+    "flex" | "none"
+  >("none")
   const [navbarShadow, setNavbarShadow] = useState("")
   const pathname = usePathname()
 
@@ -27,17 +32,31 @@ export default function Navbar() {
       : setNavbarShadow("")
   }
 
-  const toggleRankDropdown = () => {
+  const rankDropdownHover = () => {
     setDropdownsVisible((prevState) => ({
       ...prevState,
-      ranks: prevState.ranks === "block" ? "none" : "block",
+      ranks: "block",
     }))
   }
 
-  const toggleRulesDropdown = () => {
+  const rankDropdownHoverOff = () => {
     setDropdownsVisible((prevState) => ({
       ...prevState,
-      rules: prevState.rules === "block" ? "none" : "block",
+      ranks: "none",
+    }))
+  }
+
+  const rulesDropdownHover = () => {
+    setDropdownsVisible((prevState) => ({
+      ...prevState,
+      rules: "block",
+    }))
+  }
+
+  const rulesDropdownHoverOff = () => {
+    setDropdownsVisible((prevState) => ({
+      ...prevState,
+      rules: "none",
     }))
   }
 
@@ -86,8 +105,8 @@ export default function Navbar() {
         </li>
         <li
           className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={toggleRankDropdown}
-          onMouseLeave={toggleRankDropdown}
+          onMouseEnter={rankDropdownHover}
+          onMouseLeave={rankDropdownHoverOff}
         >
           <a
             draggable="false"
@@ -138,8 +157,8 @@ export default function Navbar() {
         </li>
         <li
           className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={toggleRulesDropdown}
-          onMouseLeave={toggleRulesDropdown}
+          onMouseEnter={rulesDropdownHover}
+          onMouseLeave={rulesDropdownHoverOff}
         >
           <a
             draggable="false"

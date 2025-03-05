@@ -16,7 +16,13 @@ const nonDisplayedCols = [
   "bracket_url2",
   "winner_country",
 ]
-const fragmentColumns = ["name", "video_url", "winner", "bracket_url"]
+const fragmentColumns = [
+  "name",
+  "video_url",
+  "winner",
+  "bracket_url",
+  "player_name",
+]
 
 function Row({
   index,
@@ -122,9 +128,20 @@ function Row({
                 className="h-auto w-[25px] md:w-[30px] xl:w-[40px]"
               />
 
-              <span className="ml-1 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
-                {row[field]}
-              </span>
+              {field === "player_name" ? (
+                <Link
+                  href={`/player/${row["id"]}`}
+                  className="text-xs hover:text-red-500 sm:text-sm md:text-base lg:text-lg xl:text-xl"
+                >
+                  <span className="ml-1 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
+                    {row[field]}
+                  </span>
+                </Link>
+              ) : (
+                <span className="ml-1 text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl">
+                  {row[field]}
+                </span>
+              )}
             </div>
           ),
         )}
@@ -137,18 +154,20 @@ export default function FixedTable({
   columns,
   minWidth,
   height,
+  grow,
 }: {
   data: QueryResultRow[]
   columns: string[]
   minWidth?: number
-  height?: number
+  height?: number //static height
+  grow?: boolean //fill rest of page container
 }) {
   return (
     <div
-      className="mt-5 w-full"
+      className={`mt-5 w-full ${grow && "flex-grow"}`}
       style={{ height: height === undefined ? "100%" : `${height}px` }}
     >
-      <div className={`ml-auto mr-auto h-full overflow-auto`}>
+      <div className={`ml-auto mr-auto h-full ${minWidth && "overflow-auto"}`}>
         <AutoSizer>
           {({ height, width }: Size) => (
             <FixedSizeList

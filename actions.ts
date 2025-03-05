@@ -56,24 +56,25 @@ const getAllTournaments = cache(async (): Promise<QueryResultRow[]> => {
   }
 })
 
-const getAllPlayerElo = cache(async (): Promise<QueryResultRow[]> => {
-  try {
-    const queryResult =
-      await sql`SELECT rank, flag, name, elo, games, id FROM crossy_road_elo_rankings ORDER BY rank ASC`
-    return queryResult?.rowCount && queryResult?.rowCount > 0
-      ? queryResult?.rows
-      : []
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-})
+const getAllPlayerElo = cache(
+  async (search: string = ""): Promise<QueryResultRow[]> => {
+    try {
+      const queryResult =
+        await sql`SELECT rank, flag, name AS player_name, elo, games, id FROM crossy_road_elo_rankings WHERE name ILIKE '%' || ${search} || '%' ORDER BY rank ASC`
+      return queryResult?.rowCount && queryResult?.rowCount > 0
+        ? queryResult?.rows
+        : []
+    } catch (error) {
+      console.error(error)
+      return []
+    }
+  },
+)
 
-const getPlayerElo = async (search: string): Promise<QueryResultRow[]> => {
+const getPlayerElo = async (id: string): Promise<QueryResultRow[]> => {
   try {
-    const capitalizedSearch = capitalizeString(search)
     const queryResult =
-      await sql`SELECT id, rank, flag, name, elo, games, won FROM crossy_road_elo_rankings WHERE name = ${capitalizedSearch} OR id = ${capitalizedSearch}`
+      await sql`SELECT id, rank, flag, name, elo, games, won FROM crossy_road_elo_rankings WHERE id = ${id}`
     return queryResult?.rowCount && queryResult?.rowCount > 0
       ? queryResult?.rows
       : []
@@ -165,39 +166,14 @@ export type PlayerSearchResult =
       error?: undefined
     }
 
-const handlePlayerSearch = async (
-  prevState: any,
-  formData: FormData,
-): Promise<PlayerSearchResult> => {
-  const search = String(formData.get("search"))
-  const recaptchaToken = String(formData.get("g-recaptcha-response"))
-
-  if (!search) {
-    revalidatePath("/player_lookup")
-    return { error: "search cannot be empty" }
+const handlePlayerSearch = async (id: string): Promise<PlayerSearchResult> => {
+  if (!id || id.length > 20 || isNaN(parseInt(id))) {
+    return { error: "player not found" }
   }
 
-  if (search.length > 64) {
-    revalidatePath("/player_lookup")
-    return { error: "search is too long" }
-  }
-
-  if (!recaptchaToken) {
-    revalidatePath("/player_lookup")
-    return { error: "no reCAPTCHA token set." }
-  }
-
-  const recaptchaValidated = await validateRecaptcha(recaptchaToken)
-
-  if (!recaptchaValidated) {
-    revalidatePath("/player_lookup")
-    return { error: "reCAPTCHA validation failed" }
-  }
-
-  const playerSearch = await getPlayerElo(search)
+  const playerSearch = await getPlayerElo(id)
 
   if (playerSearch.length === 0) {
-    revalidatePath("/player_lookup")
     return { error: "no results" }
   }
 
@@ -239,7 +215,6 @@ const handlePlayerSearch = async (
   const averagePlace = Math.round(totalPlace / Math.max(totalTournaments, 1))
   playerSearch[0].averageScore = averageScore
   playerSearch[0].averagePlace = averagePlace
-  revalidatePath("/player_lookup")
   return { data: playerSearch, records: playerTournaments }
 }
 

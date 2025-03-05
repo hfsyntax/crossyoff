@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { getMembersCount, getTournamentCount } from "@/actions"
 
-export default async function Home(): Promise<JSX.Element> {
+export default async function Home() {
   const tournaments = await getTournamentCount()
   const members = await getMembersCount()
   return (

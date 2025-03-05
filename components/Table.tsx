@@ -33,7 +33,7 @@ function Row({
   index: number
   style: CSSProperties
   columns: string[]
-  data: any
+  data: QueryResultRow[]
 }) {
   const row = data[index]
   return (

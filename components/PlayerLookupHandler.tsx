@@ -2,7 +2,7 @@
 import type { ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 
-export default function PlayerLookupHandler(): JSX.Element {
+export default function PlayerLookupHandler() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()

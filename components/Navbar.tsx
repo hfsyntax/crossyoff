@@ -6,7 +6,7 @@ import Link from "next/link"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 
-export default function Navbar(): JSX.Element {
+export default function Navbar() {
   const [dropdownsVisible, setDropdownsVisible] = useState({
     ranks: "none",
     rules: "none",

@@ -1,3 +1,5 @@
+"use cache"
+
 import { handlePlayerSearch } from "@/actions"
 import Table from "@/components/Table"
 

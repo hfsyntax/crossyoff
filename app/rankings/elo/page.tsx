@@ -1,3 +1,5 @@
+"use cache"
+
 import { getAllPlayerElo } from "@/actions"
 import Table from "@/components/Table"
 import PlayerLookupHandler from "@/components/PlayerLookupHandler"
@@ -7,13 +9,12 @@ export const metadata = {
   description: "Lists the CrossyOff top players by elo.",
 }
 
-export default async function Elo({
-  searchParams,
-}: {
-  searchParams?: {
+export default async function Elo(props: {
+  searchParams?: Promise<{
     search?: string
-  }
+  }>
 }) {
+  const searchParams = await props.searchParams
   const players = await getAllPlayerElo(searchParams?.search)
   return (
     <div className="relative left-0 mb-3 mt-[150px] flex h-0 w-full flex-grow transform-none select-none flex-col font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">

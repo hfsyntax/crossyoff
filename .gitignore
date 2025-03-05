@@ -22,6 +22,7 @@
 package-lock.json
 /.vscode
 TODO
+clear-cache.bat
 
 # debug
 npm-debug.log*

@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons"
 import { faTrophy } from "@fortawesome/free-solid-svg-icons"
 
-export default function Footer(): JSX.Element {
+export default function Footer() {
   return (
     <div className="relative left-0 mt-auto flex w-full select-none items-center justify-center bg-black p-3">
       <span className="mr-5 text-xs text-white md:text-base">

@@ -1,3 +1,5 @@
+"use cache"
+
 import { getPlatformTopPlayers } from "@/actions"
 import Link from "next/link"
 import Table from "@/components/Table"
@@ -7,7 +9,7 @@ export const metadata = {
   description: "Lists the Crossy Road top highscores for mobile.",
 }
 
-export default async function Mobile(): Promise<JSX.Element> {
+export default async function Mobile() {
   const players = await getPlatformTopPlayers("mobile")
   return (
     <div className="relative left-0 mt-[150px] flex h-0 w-full flex-grow transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">

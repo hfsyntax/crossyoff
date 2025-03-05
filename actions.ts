@@ -1,4 +1,5 @@
 "use server"
+import type { PlayerSearchResult, HighscoreFormResult } from "@/types"
 import type { QueryResultRow } from "@vercel/postgres"
 import { revalidatePath } from "next/cache"
 import { cache } from "react"
@@ -146,18 +147,6 @@ const validateRecaptcha = async (token: string): Promise<boolean> => {
   }
 }
 
-export type PlayerSearchResult =
-  | {
-      error: string
-      data?: undefined
-      records?: undefined
-    }
-  | {
-      data: QueryResultRow[]
-      records: QueryResultRow[]
-      error?: undefined
-    }
-
 const handlePlayerSearch = async (id: string): Promise<PlayerSearchResult> => {
   if (!id || id.length > 20 || isNaN(parseInt(id))) {
     return { error: "player not found" }
@@ -209,16 +198,6 @@ const handlePlayerSearch = async (id: string): Promise<PlayerSearchResult> => {
   playerSearch[0].averagePlace = averagePlace
   return { data: playerSearch, records: playerTournaments }
 }
-
-export type HighscoreFormResult =
-  | {
-      error: string
-      success?: undefined
-    }
-  | {
-      success: string
-      error?: undefined
-    }
 
 const handleSubmitRun = async (
   prevState: any,

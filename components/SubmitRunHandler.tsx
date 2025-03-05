@@ -1,18 +1,15 @@
 "use client"
-import { useRef, useState, useEffect, FormEvent } from "react"
-import { useFormState } from "react-dom"
-import { HighscoreFormResult, handleSubmitRun } from "@/actions"
+import type { HighscoreFormResult } from "@/types"
+import type { FormEvent } from "react"
+import { useRef, useState, useEffect, useActionState } from "react"
+import { handleSubmitRun } from "@/actions"
 import ReCAPTCHA from "react-google-recaptcha"
 
-export default function SubmitRunHandler(): JSX.Element {
+export default function SubmitRunHandler() {
   const recaptcha = useRef<ReCAPTCHA | null>(null)
   const currentForm = useRef<HTMLFormElement>(null)
-  const [formState, setFormState] = useState({
-    error: "",
-    disabled: false,
-    text: "Submit",
-  })
-  const [formResponse, formAction] = useFormState<
+  const [formError, setFormError] = useState<string>()
+  const [formResponse, formAction, isPending] = useActionState<
     HighscoreFormResult | null,
     FormData
   >(handleSubmitRun, null)
@@ -29,10 +26,7 @@ export default function SubmitRunHandler(): JSX.Element {
 
       for (let input of formInputs) {
         if (!formData.get(input)) {
-          return setFormState({
-            ...formState,
-            error: `${input} cannot be empty`,
-          })
+          return setFormError(`${input} cannot be empty`)
         }
       }
 
@@ -43,37 +37,26 @@ export default function SubmitRunHandler(): JSX.Element {
       const platform = String(formData.get("platform"))
 
       if (name.length > 64) {
-        return setFormState({ ...formState, error: "name too long" })
+        return setFormError("name too long")
       }
 
       if (country.length < 4 || country.length > 64) {
-        return setFormState({ ...formState, error: "invalid country" })
+        return setFormError("invalid country")
       }
 
       if (isNaN(parseInt(score)) || score.length > 4) {
-        return setFormState({
-          ...formState,
-          error: "score must be a number and 4 digits or less",
-        })
+        return setFormError("score must be a number and 4 digits or less")
       }
 
       if (videoURL.length > 2083 || !validURLRegex.test(videoURL)) {
-        return setFormState({ ...formState, error: "invalid video url" })
+        return setFormError("invalid video url")
       }
 
       if (platform !== "mobile" && platform !== "PC") {
-        return setFormState({
-          ...formState,
-          error: "platform must be Mobile or PC",
-        })
+        return setFormError("platform must be Mobile or PC")
       }
 
       formAction(formData)
-      setFormState({
-        ...formState,
-        disabled: true,
-        text: "Loading...",
-      })
     } catch (error) {
       console.error(error)
     }
@@ -83,7 +66,8 @@ export default function SubmitRunHandler(): JSX.Element {
     if (formResponse?.success) {
       currentForm?.current?.reset()
     }
-    setFormState({ disabled: false, text: "Submit", error: "" })
+    if (formResponse?.error) setFormError(formResponse.error)
+    if (formError && !formResponse?.error) setFormError("")
   }, [formResponse])
 
   return (
@@ -159,24 +143,17 @@ export default function SubmitRunHandler(): JSX.Element {
         type="submit"
         className="relative ml-1 mt-2 w-fit border-none bg-red-500 pb-2 pl-4 pr-4 pt-2 text-white no-underline hover:rounded-xl hover:bg-slate-100 hover:text-red-500 enabled:cursor-pointer enabled:duration-500 enabled:ease-in-out md:pb-3 md:pl-5 md:pr-5 md:pt-3 lg:pb-4 lg:pl-9 lg:pr-9 lg:pt-4 xl:ml-0"
         name="submit-btn"
-        value={formState.text}
-        disabled={formState.disabled}
+        value={isPending ? "Loading..." : "Submit"}
+        disabled={isPending}
       />
       <ReCAPTCHA
         ref={recaptcha}
         sitekey="6Leu4_UUAAAAAEmRqjfo2-g9z75Jc8JHAi7_D-LG"
         size="invisible"
       />
-      {formState.error && (
-        <span className="font-bold text-red-500">{formState.error}</span>
-      )}
+      {formError && <span className="font-bold text-red-500">{formError}</span>}
       {formResponse?.success && (
-        <span className="font-bold text-green-500">
-          {formResponse?.success}
-        </span>
-      )}
-      {formResponse?.error && (
-        <span className="font-bold text-red-500">{formResponse?.error}</span>
+        <span className="font-bold text-green-500">{formResponse.success}</span>
       )}
     </form>
   )

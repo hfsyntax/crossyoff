@@ -1,8 +1,12 @@
+"use cache"
+
 import Image from "next/image"
 import Link from "next/link"
 import { getMembersCount, getTournamentCount } from "@/actions"
+import { unstable_cacheLife as cacheLife } from "next/cache"
 
 export default async function Home() {
+  cacheLife("days")
   const tournaments = await getTournamentCount()
   const members = await getMembersCount()
   return (

@@ -1,5 +1,4 @@
 import { getAllPlayerElo } from "@/actions"
-import Link from "next/link"
 import Table from "@/components/Table"
 import PlayerLookupHandler from "@/components/PlayerLookupHandler"
 

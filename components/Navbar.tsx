@@ -27,29 +27,32 @@ export default function Navbar(): JSX.Element {
       : setNavbarShadow("")
   }
 
-  const rankDropdownHover = () => {
-    setDropdownsVisible({ ...dropdownsVisible, ranks: "block" })
+  const toggleRankDropdown = () => {
+    setDropdownsVisible((prevState) => ({
+      ...prevState,
+      ranks: prevState.ranks === "block" ? "none" : "block",
+    }))
   }
 
-  const rankDropdownHoverOff = () => {
-    setDropdownsVisible({ ...dropdownsVisible, ranks: "none" })
-  }
-
-  const rulesDropdownHover = () => {
-    setDropdownsVisible({ ...dropdownsVisible, rules: "block" })
-  }
-
-  const rulesDropdownHoverOff = () => {
-    setDropdownsVisible({ ...dropdownsVisible, rules: "none" })
+  const toggleRulesDropdown = () => {
+    setDropdownsVisible((prevState) => ({
+      ...prevState,
+      rules: prevState.rules === "block" ? "none" : "block",
+    }))
   }
 
   useEffect(() => {
     window.addEventListener("scroll", highlightNavbar)
+    return () => window.removeEventListener("scroll", highlightNavbar)
   }, [])
 
   useEffect(() => {
-    setDropdownsVisible({ ranks: "none", rules: "none" })
-    setMobileNavbarVisible("none")
+    if (
+      dropdownsVisible.ranks === "block" ||
+      dropdownsVisible.rules === "block"
+    )
+      setDropdownsVisible({ ranks: "none", rules: "none" })
+    if (mobileNavbarVisible === "flex") setMobileNavbarVisible("none")
   }, [pathname])
 
   return (
@@ -83,8 +86,8 @@ export default function Navbar(): JSX.Element {
         </li>
         <li
           className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={rankDropdownHover}
-          onMouseLeave={rankDropdownHoverOff}
+          onMouseEnter={toggleRankDropdown}
+          onMouseLeave={toggleRankDropdown}
         >
           <a
             draggable="false"
@@ -135,8 +138,8 @@ export default function Navbar(): JSX.Element {
         </li>
         <li
           className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={rulesDropdownHover}
-          onMouseLeave={rulesDropdownHoverOff}
+          onMouseEnter={toggleRulesDropdown}
+          onMouseLeave={toggleRulesDropdown}
         >
           <a
             draggable="false"

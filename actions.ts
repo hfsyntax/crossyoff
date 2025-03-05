@@ -4,14 +4,6 @@ import { revalidatePath } from "next/cache"
 import { cache } from "react"
 import { sql } from "@vercel/postgres"
 
-const capitalizeString = (str: string): string => {
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ")
-}
-
 const getMembersCount = cache(async (): Promise<string | number> => {
   try {
     const endpoint = "https://discord.com/api/guilds/600865413890310155/preview"

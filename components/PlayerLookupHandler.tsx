@@ -1,7 +1,8 @@
 "use client"
+import type { PlayerSearchResult } from "@/actions"
 import { useEffect, useState, useRef, FormEvent } from "react"
 import { useFormState } from "react-dom"
-import { handlePlayerSearch, PlayerSearchResult } from "@/actions"
+import { handlePlayerSearch } from "@/actions"
 import Table from "./Table"
 import ReCAPTCHA from "react-google-recaptcha"
 
@@ -54,23 +55,27 @@ export default function PlayerLookupHandler(): JSX.Element {
       </button>
       {formResponse?.data && (
         <Table
-          data={formResponse.data}
-          rowHeaders={[
+          data={[{ ...formResponse?.data[0] }, ...formResponse?.data]}
+          columns={[
             "#",
             "Player",
             "Elo",
             "Games",
-            "Games Won",
-            "Average Score",
-            "Average Place",
+            "Won",
+            "Avg. Score",
+            "Avg. Place",
           ]}
+          height={100}
         />
       )}
-      <h2>Recent Tournaments</h2>
+      <h2 className="mb-3 ml-1 mt-3 text-base sm:text-xl md:text-2xl xl:ml-0">
+        Recent Tournaments
+      </h2>
       {formResponse?.records && formResponse?.records?.length > 0 ? (
         <Table
-          data={formResponse?.records}
-          rowHeaders={["#", "name", "place", "score", "change"]}
+          data={[{ ...formResponse?.records[0] }, ...formResponse?.records]}
+          columns={["#", "Name", "place", "score", "change"]}
+          height={300}
         />
       ) : (
         <b>no tournaments found</b>

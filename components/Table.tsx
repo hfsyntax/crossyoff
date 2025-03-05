@@ -31,14 +31,17 @@ function Row({
 }) {
   const row = data[index]
   return (
-    <div style={{ ...style }} className="flex items-center bg-slate-200">
+    <div
+      style={{ ...style }}
+      className={`flex items-center ${index === 0 ? "bg-slate-700" : "bg-slate-200"} `}
+    >
       {Object.keys(row)
         .filter((field) => !nonDisplayedCols.includes(field))
         .map((field: string, rowIndex: number) =>
           index === 0 || !fragmentColumns.includes(field) ? (
             <span
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
-              className={`relative inline-block text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl ${["Player", "Name", "Winner"].includes(columns[rowIndex]) ? "flex-[2.5] md:flex-[2]" : row[field] instanceof Date || columns[rowIndex] === "date" ? "flex-[2] md:flex-[1]" : columns[rowIndex] === "#" ? "flex-[0.5]" : "flex-[1]"} pl-2 ${
+              className={`relative inline-block text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl ${["Player", "Name", "Winner"].includes(columns[rowIndex]) ? "flex-[3] md:flex-[2]" : row[field] instanceof Date || columns[rowIndex] === "date" ? "flex-[2] md:flex-[1]" : columns[rowIndex] === "#" ? "flex-[0.5]" : "flex-[1]"} pl-2 ${
                 index === 0
                   ? "bg-slate-700 text-white"
                   : row[field] === "Completed"
@@ -46,7 +49,7 @@ function Row({
                     : row[field] === "In-Progress"
                       ? "text-[coral]"
                       : "text-black"
-              } !leading-[50px]`}
+              } `}
             >
               {index === 0
                 ? columns[rowIndex]
@@ -56,7 +59,7 @@ function Row({
             </span>
           ) : ["video_url", "bracket_url"].includes(field) ? (
             <div
-              className="flex flex-[1]"
+              className="flex flex-[1] pl-2 leading-[50px]"
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
             >
               {(row["bracket_url"] || row["video_url"]) && (
@@ -74,7 +77,7 @@ function Row({
                   <FontAwesomeIcon
                     icon={row["bracket_url"] ? faTrophy : faVideo}
                     size="2xl"
-                    className="link-icon relative inline-block flex-[1]"
+                    className="link-icon"
                     preserveAspectRatio="xMinYMin meet"
                   />
                 </Link>
@@ -88,7 +91,7 @@ function Row({
                   <FontAwesomeIcon
                     icon={faTrophy}
                     size="2xl"
-                    className="link-icon relative inline-block flex-[1]"
+                    className="link-icon"
                     preserveAspectRatio="xMinYMin meet"
                   />
                 </Link>
@@ -97,7 +100,7 @@ function Row({
           ) : (
             <div
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
-              className={`relative flex h-full flex-[2.5] items-center pl-2 leading-[50px] md:flex-[2]`}
+              className={`relative flex h-full flex-[3] items-center pl-2 leading-[50px] md:flex-[2]`}
             >
               <Image
                 width={50}
@@ -133,14 +136,19 @@ export default function FixedTable({
   data,
   columns,
   minWidth,
+  height,
 }: {
   data: QueryResultRow[]
   columns: string[]
   minWidth?: number
+  height?: number
 }) {
   return (
-    <div className="mt-5 h-full w-full">
-      <div className={`ml-auto mr-auto h-full ${minWidth && "overflow-auto"}`}>
+    <div
+      className="mt-5 w-full"
+      style={{ height: height === undefined ? "100%" : `${height}px` }}
+    >
+      <div className={`ml-auto mr-auto h-full overflow-auto`}>
         <AutoSizer>
           {({ height, width }: Size) => (
             <FixedSizeList

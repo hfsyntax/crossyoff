@@ -88,7 +88,7 @@ const getPlayerTournaments = async (
 ): Promise<QueryResultRow[]> => {
   try {
     const queryResult =
-      await sql`SELECT tournaments, tournament, place, score, change, img  FROM crossy_road_games WHERE id = ${id} ORDER BY tournaments DESC`
+      await sql`SELECT tournaments, tournament AS name, place, score, change, img AS tournament_logo  FROM crossy_road_games WHERE id = ${id} ORDER BY tournaments DESC`
     return queryResult?.rowCount && queryResult?.rowCount > 0
       ? queryResult?.rows
       : []
@@ -214,7 +214,7 @@ const handlePlayerSearch = async (
   let totalChallenges = 0
 
   for (let tournament of playerTournaments) {
-    const tournamentName = tournament["tournament"]
+    const tournamentName = tournament["name"]
     if (
       !tournamentName.includes("Worlds") &&
       tournamentName !== "King of Cross #1"

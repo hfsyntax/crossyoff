@@ -1,6 +1,5 @@
 User-Agent: *
 Allow: /
-Disallow: /player_lookup
 Disallow: /submit_run
 Disallow: /api/refreshCache
 

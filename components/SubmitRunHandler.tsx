@@ -2,7 +2,7 @@
 import type { HighscoreFormResult } from "@/types"
 import type { FormEvent } from "react"
 import { useRef, useState, useEffect, useActionState } from "react"
-import { handleSubmitRun } from "@/actions"
+import { handleSubmitRun } from "@/app/actions"
 import ReCAPTCHA from "react-google-recaptcha"
 
 export default function SubmitRunHandler() {

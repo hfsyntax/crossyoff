@@ -1,6 +1,6 @@
 "use cache"
 
-import { getPlatformTopPlayers } from "@/actions"
+import { getPlatformTopPlayers } from "@/lib"
 import Link from "next/link"
 import Table from "@/components/Table"
 

@@ -1,3 +1,5 @@
+import type { RowList, Row } from "postgres"
+
 export type PlayerSearchResult =
   | {
       error: string
@@ -5,8 +7,8 @@ export type PlayerSearchResult =
       records?: undefined
     }
   | {
-      data: QueryResultRow[]
-      records: QueryResultRow[]
+      data: RowList<Row[]> | never[]
+      records: RowList<Row[]> | never[]
       error?: undefined
     }
 

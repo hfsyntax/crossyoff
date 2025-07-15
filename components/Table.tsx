@@ -1,7 +1,7 @@
 "use client"
 import type { CSSProperties } from "react"
 import type { Size } from "react-virtualized-auto-sizer"
-import type { QueryResultRow } from "@vercel/postgres"
+import type { Row } from "postgres"
 import { FixedSizeList } from "react-window"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrophy, faVideo } from "@fortawesome/free-solid-svg-icons"
@@ -33,7 +33,7 @@ function Row({
   index: number
   style: CSSProperties
   columns: string[]
-  data: QueryResultRow[]
+  data: Row[]
 }) {
   const row = data[index]
   return (
@@ -156,7 +156,7 @@ export default function FixedTable({
   height,
   grow,
 }: {
-  data: QueryResultRow[]
+  data: Row[]
   columns: string[]
   minWidth?: number
   height?: number //static height

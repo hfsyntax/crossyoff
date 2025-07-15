@@ -1,11 +1,22 @@
 "use cache"
 
-import { getAllTournaments } from "@/actions"
+import type { Row, RowList } from "postgres"
 import Table from "@/components/Table"
+import sql from "@/sql"
 
 export const metadata = {
   title: "Schedule",
   description: "Displays the CrossyOff tournament schedule.",
+}
+
+async function getAllTournaments(): Promise<RowList<Row[]> | never[]> {
+  const queryResult =
+    await sql`SELECT tournament_number, date, tournament_logo,  name, status, winner_country, winner, bracket_url, bracket_url2 FROM crossy_road_tournaments ORDER BY tournament_number DESC`.catch(
+      (error) => {
+        return null
+      },
+    )
+  return queryResult ?? []
 }
 
 export default async function Schedule() {

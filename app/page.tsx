@@ -2,8 +2,40 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { getMembersCount, getTournamentCount } from "@/actions"
 import { unstable_cacheLife as cacheLife } from "next/cache"
+import sql from "@/sql"
+
+async function getMembersCount(): Promise<number | "N/A"> {
+  try {
+    const endpoint = "https://discord.com/api/guilds/600865413890310155/preview"
+    const token = process.env.BOT_TOKEN
+    const response = await fetch(endpoint, {
+      headers: { Authorization: `Bot ${token}` },
+      method: "GET",
+    })
+
+    if (!response.ok) return "N/A"
+
+    const responseBody = await response.json()
+    return responseBody.approximate_member_count
+      ? Number(responseBody.approximate_member_count)
+      : "N/A"
+  } catch (error) {
+    console.error(error)
+    return "N/A"
+  }
+}
+
+async function getTournamentCount(): Promise<number> {
+  const queryResult =
+    await sql`SELECT COUNT(*) AS count FROM crossy_road_tournaments`.catch(
+      (error) => {
+        console.error(error)
+        return null
+      },
+    )
+  return Number(queryResult?.[0].count)
+}
 
 export default async function Home() {
   cacheLife("days")

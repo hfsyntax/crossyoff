@@ -1,10 +1,24 @@
-import { getAllPlayerElo } from "@/actions"
+import type { RowList, Row } from "postgres"
 import Table from "@/components/Table"
 import PlayerLookupHandler from "@/components/PlayerLookupHandler"
+import sql from "@/sql"
 
 export const metadata = {
   title: "Elo Rankings",
   description: "Lists the CrossyOff top players by elo.",
+}
+
+async function getAllPlayerElo(
+  search: string = "",
+): Promise<RowList<Row[]> | never[]> {
+  const queryResult =
+    await sql`SELECT rank, flag, name AS player_name, elo, games, id FROM crossy_road_elo_rankings WHERE name ILIKE '%' || ${search} || '%' ORDER BY rank ASC`.catch(
+      (error) => {
+        console.error(error)
+        return null
+      },
+    )
+  return queryResult ?? []
 }
 
 export default async function Elo(props: {

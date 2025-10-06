@@ -1,22 +1,28 @@
 "use cache"
 
-import type { Row, RowList } from "postgres"
+import type { Schedule } from "@/types"
 import Table from "@/components/Table"
-import sql from "@/sql"
+import supabase from "@/lib/supabase"
 
 export const metadata = {
   title: "Schedule",
   description: "Displays the CrossyOff tournament schedule.",
 }
 
-async function getAllTournaments(): Promise<RowList<Row[]> | never[]> {
-  const queryResult =
-    await sql`SELECT tournament_number, date, tournament_logo,  name, status, winner_country, winner, bracket_url, bracket_url2 FROM crossy_road_tournaments ORDER BY tournament_number DESC`.catch(
-      (error) => {
-        return null
-      },
+async function getAllTournaments(): Promise<Schedule[]> {
+  const { data, error } = await supabase
+    .from("crossy_road_tournaments")
+    .select(
+      "tournament_number, date, tournament_logo, name, status, winner_country, winner, bracket_url, bracket_url2",
     )
-  return queryResult ?? []
+    .order("tournament_number", { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  return data
 }
 
 export default async function Schedule() {

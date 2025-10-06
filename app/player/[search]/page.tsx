@@ -1,76 +1,87 @@
 "use cache"
 
-import type { PlayerSearchResult } from "@/types"
-import type { RowList, Row } from "postgres"
 import Table from "@/components/Table"
-import sql from "@/sql"
+import supabase from "@/lib/supabase"
 
 export const metadata = {
   title: "Player Lookup",
 }
 
-async function getPlayerElo(id: string): Promise<RowList<Row[]> | never[]> {
-  const queryResult =
-    await sql`SELECT id, rank, flag, name, elo, games, won FROM crossy_road_elo_rankings WHERE id = ${id}`.catch(
-      (error) => {
-        console.error(error)
-        return null
-      },
-    )
+async function getPlayerElo(id: string): Promise<{
+  id: any
+  rank: any
+  flag: any
+  name: any
+  elo: any
+  games: any
+  won: any
+  averageScore?: any
+  averagePlace?: any
+} | null> {
+  const { data, error } = await supabase
+    .from("crossy_road_elo_rankings")
+    .select("id, rank, flag, name, elo, games, won")
+    .eq("id", id)
+    .single()
 
-  return queryResult ?? []
-}
-
-async function getPlayerTournaments(
-  id: number | string,
-): Promise<RowList<Row[]> | never[]> {
-  const queryResult =
-    await sql`SELECT tournaments, tournament AS name, place, score, change, img AS tournament_logo  FROM crossy_road_games WHERE id = ${id} ORDER BY tournaments DESC`.catch(
-      (error) => {
-        console.error(error)
-        return null
-      },
-    )
-  return queryResult ?? []
-}
-
-async function getPlayerChallenges(
-  id: number | string,
-): Promise<RowList<Row[]> | never[]> {
-  const queryResult = await sql`SELECT
-        challenge_id,
-        CASE
-            WHEN challenger_id = ${id} THEN challenger_id
-            WHEN opponent_id = ${id} THEN opponent_id
-        END AS player_id,
-        CASE
-            WHEN challenger_id = ${id} THEN challenger_score
-            WHEN opponent_id = ${id} THEN opponent_score
-        END AS player_score
-        FROM
-            crossy_road_challenges
-        WHERE
-            challenger_id = ${id} OR opponent_id = ${id}`.catch((error) => {
+  if (error) {
     console.error(error)
     return null
-  })
-  return queryResult ?? []
+  }
+
+  return data
 }
 
-async function handlePlayerSearch(id: string): Promise<PlayerSearchResult> {
+async function getPlayerTournaments(id: number | string) {
+  const { data, error } = await supabase
+    .from("crossy_road_games")
+    .select("tournaments, tournament, place, score, change, img")
+    .eq("id", id)
+    .order("tournaments", { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  // order matters when parsing table fields in table component
+  return data.map(({ img, tournament, place, score, change, tournaments }) => ({
+    tournaments,
+    name: tournament,
+    place,
+    score,
+    change,
+    tournament_logo: img,
+  }))
+}
+
+async function getPlayerChallenges(id: number | string) {
+  const { data, error } = await supabase.rpc("get_player_challenges", {
+    p_id: id,
+  })
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  return data
+}
+
+async function handlePlayerSearch(id: string) {
   if (!id || id.length > 20 || isNaN(parseInt(id))) {
     return { error: "player not found" }
   }
 
   const playerSearch = await getPlayerElo(id)
 
-  if (playerSearch.length === 0) return { error: "no results" }
+  if (!playerSearch) return { error: "no results" }
 
   // get tournaments
-  const playerTournaments = await getPlayerTournaments(playerSearch?.[0]?.id)
+  const playerTournaments = await getPlayerTournaments(playerSearch.id)
 
   // get challenges
-  const playerChallenges = await getPlayerChallenges(playerSearch?.[0]?.id)
+  const playerChallenges = await getPlayerChallenges(playerSearch.id)
 
   // calculate average score and place
   let totalPlace = 0
@@ -102,8 +113,8 @@ async function handlePlayerSearch(id: string): Promise<PlayerSearchResult> {
   )
   // max in the case of a player who played challenges but no tournaments
   const averagePlace = Math.round(totalPlace / Math.max(totalTournaments, 1))
-  playerSearch[0].averageScore = averageScore
-  playerSearch[0].averagePlace = averagePlace
+  playerSearch.averageScore = averageScore
+  playerSearch.averagePlace = averagePlace
   return { data: playerSearch, records: playerTournaments }
 }
 
@@ -122,7 +133,7 @@ export default async function Page({
       </h1>
       {playerSearch.data && (
         <Table
-          data={[{ ...playerSearch.data[0] }, ...playerSearch.data]}
+          data={[{ ...playerSearch.data }, playerSearch.data]}
           columns={[
             "#",
             "Player",

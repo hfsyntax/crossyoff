@@ -1,219 +1,33 @@
-"use client"
-import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
-import Image from "next/image"
-import Link from "next/link"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBars } from "@fortawesome/free-solid-svg-icons"
+import { getSession } from "@/lib/session"
+import ClientNavbar from "./ClientNavbar"
+import { unstable_cacheTag as cacheTag } from "next/cache"
+import supabase from "@/lib/supabase"
 
-export default function Navbar() {
-  const [dropdownsVisible, setDropdownsVisible] = useState<{
-    ranks: "block" | "none"
-    rules: "block" | "none"
-  }>({
-    ranks: "none",
-    rules: "none",
-  })
-  const [mobileNavbarVisible, setMobileNavbarVisible] = useState<
-    "flex" | "none"
-  >("none")
-  const [navbarShadow, setNavbarShadow] = useState("")
-  const pathname = usePathname()
+async function getLatestCRCTableName(): Promise<string | null> {
+  "use cache"
+  cacheTag("crossy_road_castle_leaderboards")
 
-  const toggleMobileNavbar = () => {
-    const oppositeState = mobileNavbarVisible === "none" ? "flex" : "none"
-    setMobileNavbarVisible(oppositeState)
+  const { data, error } = await supabase
+    .from("crossy_road_castle_tables")
+    .select("table_name")
+    .order("created_at", { ascending: false })
+    .maybeSingle()
+
+  if (error) {
+    console.error(error)
+    return null
   }
 
-  const highlightNavbar = () => {
-    const navHeight = 100
-    window.scrollY >= navHeight
-      ? setNavbarShadow("shadow")
-      : setNavbarShadow("")
-  }
+  return data?.table_name ?? null
+}
 
-  const rankDropdownHover = () => {
-    setDropdownsVisible((prevState) => ({
-      ...prevState,
-      ranks: "block",
-    }))
-  }
-
-  const rankDropdownHoverOff = () => {
-    setDropdownsVisible((prevState) => ({
-      ...prevState,
-      ranks: "none",
-    }))
-  }
-
-  const rulesDropdownHover = () => {
-    setDropdownsVisible((prevState) => ({
-      ...prevState,
-      rules: "block",
-    }))
-  }
-
-  const rulesDropdownHoverOff = () => {
-    setDropdownsVisible((prevState) => ({
-      ...prevState,
-      rules: "none",
-    }))
-  }
-
-  useEffect(() => {
-    window.addEventListener("scroll", highlightNavbar)
-    return () => window.removeEventListener("scroll", highlightNavbar)
-  }, [])
-
-  useEffect(() => {
-    if (
-      dropdownsVisible.ranks === "block" ||
-      dropdownsVisible.rules === "block"
-    )
-      setDropdownsVisible({ ranks: "none", rules: "none" })
-    if (mobileNavbarVisible === "flex") setMobileNavbarVisible("none")
-  }, [pathname])
-
+export default async function Navbar() {
+  const session = await getSession()
+  const latestCRCTable = await getLatestCRCTableName()
   return (
-    <nav
-      className={`fixed left-0 top-0 z-[1] flex h-[100px] w-full transform-none items-center bg-white font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2 ${navbarShadow && "shadow-custom"}`}
-    >
-      <Image
-        src="/img/logo.png"
-        priority={true}
-        draggable="false"
-        width="100"
-        height="100"
-        alt="nav logo"
-      />
-      <h1 className={"z-[1] ml-[10px] select-none text-[30px] font-bold"}>
-        <Link className="text-black no-underline hover:text-red-500" href="/">
-          CrossyOff
-        </Link>
-      </h1>
-      <ul
-        className={`shadow-custom absolute left-0 top-full mt-0 lg:shadow-none ${mobileNavbarVisible === "flex" ? "flex" : "hidden"} right-[150px] w-full flex-col items-center justify-end bg-white lg:relative lg:left-auto lg:top-auto lg:!flex lg:w-[900px] lg:flex-row lg:bg-transparent`}
-      >
-        <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-          <Link
-            draggable="false"
-            href="/"
-            className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-          >
-            Home
-          </Link>
-        </li>
-        <li
-          className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={rankDropdownHover}
-          onMouseLeave={rankDropdownHoverOff}
-        >
-          <a
-            draggable="false"
-            className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-          >
-            Rankings
-          </a>
-          <ul
-            className={`${dropdownsVisible.ranks === "block" ? "block" : "hidden"} absolute z-[2] mt-1 w-[200px] bg-[#d3d3d3] pb-2 pl-1 pr-1 pt-2`}
-          >
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rankings/elo"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                Elo
-              </Link>
-            </li>
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rankings/mobile"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                Mobile
-              </Link>
-            </li>
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rankings/pc"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                PC
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-          <Link
-            draggable="false"
-            href="/schedule"
-            className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-          >
-            Tournament Schedule
-          </Link>
-        </li>
-        <li
-          className="relative mr-[10px] block w-fit select-none list-none p-1"
-          onMouseEnter={rulesDropdownHover}
-          onMouseLeave={rulesDropdownHoverOff}
-        >
-          <a
-            draggable="false"
-            className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-          >
-            Rules
-          </a>
-          <ul
-            className={`${dropdownsVisible.rules === "block" ? "block" : "hidden"} absolute z-[2] mt-1 w-[200px] bg-[#d3d3d3] pb-2 pl-1 pr-1 pt-2`}
-          >
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rules/lcs"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                Last Chicken Standing
-              </Link>
-            </li>
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rules/koc"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                King of Cross
-              </Link>
-            </li>
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rules/worlds"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                CrossyOff Worlds
-              </Link>
-            </li>
-            <li className="relative mr-[10px] block w-fit select-none list-none p-1">
-              <Link
-                draggable="false"
-                href="/rules/challenges"
-                className="text-xl text-black no-underline hover:cursor-pointer hover:text-red-500"
-              >
-                Challenges
-              </Link>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <FontAwesomeIcon
-        onClick={toggleMobileNavbar}
-        icon={faBars}
-        className="ml-auto mr-[10px] block cursor-pointer hover:text-red-500 lg:mr-5 lg:!hidden"
-        size="2xl"
-      />
-    </nav>
+    <ClientNavbar
+      avatar={session?.user?.avatarURL}
+      latestTable={latestCRCTable}
+    />
   )
 }

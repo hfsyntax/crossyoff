@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { unstable_cacheLife as cacheLife } from "next/cache"
-import sql from "@/sql"
+import supabase from "@/lib/supabase"
 
 async function getMembersCount(): Promise<number | "N/A"> {
   try {
@@ -27,14 +27,15 @@ async function getMembersCount(): Promise<number | "N/A"> {
 }
 
 async function getTournamentCount(): Promise<number> {
-  const queryResult =
-    await sql`SELECT COUNT(*) AS count FROM crossy_road_tournaments`.catch(
-      (error) => {
-        console.error(error)
-        return null
-      },
-    )
-  return Number(queryResult?.[0].count)
+  const { error, count } = await supabase
+    .from("crossy_road_tournaments")
+    .select("*", { count: "exact", head: true })
+
+  if (error) {
+    console.error(error)
+    return NaN
+  }
+  return Number(count)
 }
 
 export default async function Home() {

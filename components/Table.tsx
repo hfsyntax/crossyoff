@@ -1,10 +1,11 @@
 "use client"
 import type { CSSProperties } from "react"
 import type { Size } from "react-virtualized-auto-sizer"
-import type { Row } from "postgres"
 import { FixedSizeList } from "react-window"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrophy, faVideo } from "@fortawesome/free-solid-svg-icons"
+import { useRouter, usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import AutoSizer from "react-virtualized-auto-sizer"
 import Link from "next/link"
 import Image from "next/image"
@@ -15,6 +16,11 @@ const nonDisplayedCols = [
   "tournament_logo",
   "bracket_url2",
   "winner_country",
+  "table_id",
+  "table_name",
+  "row_id",
+  "discord_id",
+  "avatar_url",
 ]
 const fragmentColumns = [
   "name",
@@ -22,20 +28,21 @@ const fragmentColumns = [
   "winner",
   "bracket_url",
   "player_name",
+  "username",
 ]
 
 function Row({
   index,
   style,
   columns,
-  data,
+  rows,
 }: {
   index: number
   style: CSSProperties
   columns: string[]
-  data: Row[]
+  rows: any[]
 }) {
-  const row = data[index]
+  const row = rows[index]
   return (
     <div
       style={{ ...style }}
@@ -59,8 +66,8 @@ function Row({
             >
               {index === 0
                 ? columns[rowIndex]
-                : row[field] instanceof Date
-                  ? row[field].toLocaleDateString()
+                : field === "date"
+                  ? new Date(row[field]).toLocaleDateString()
                   : row[field]}
             </span>
           ) : ["video_url", "bracket_url"].includes(field) ? (
@@ -106,7 +113,7 @@ function Row({
           ) : (
             <div
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
-              className={`relative flex h-full flex-[3] items-center pl-2 leading-[50px] md:flex-[2]`}
+              className={`relative flex h-full ${field !== "username" ? "flex-[3] md:flex-[2]" : "flex-[1]"} items-center pl-2 leading-[50px]`}
             >
               <Image
                 width={50}
@@ -122,7 +129,9 @@ function Row({
                         ? row["tournament_logo"]
                           ? `/img/${row["tournament_logo"]}.png`
                           : "/img/flags/un.png"
-                        : "/img/flags/un.png"
+                        : field === "username"
+                          ? row["avatar_url"]
+                          : "/img/flags/un.png"
                 }
                 alt="profile_pic"
                 className="h-auto w-[25px] md:w-[30px] xl:w-[40px]"
@@ -156,13 +165,44 @@ export default function FixedTable({
   height,
   grow,
 }: {
-  data: Row[]
+  data: any[]
   columns: string[]
   minWidth?: number
   height?: number //static height
   grow?: boolean //fill rest of page container
 }) {
-  return (
+  const [rows, setRows] = useState<any[]>(data)
+  const pathname = usePathname()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (pathname.startsWith("/crossy-road-castle/leaderboard/")) {
+      const evtSource = new EventSource("/api/refreshLeaderboard")
+
+      evtSource.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        if (data.message === "refresh") router.refresh()
+      }
+
+      return () => evtSource.close()
+    }
+  }, [])
+
+  useEffect(() => {
+    setRows(data)
+  }, [data])
+
+  if (
+    pathname.startsWith("/crossy-road-castle/leaderboard/") &&
+    ((rows.length > 0 && !rows[0]?.row_id) || rows.length === 0)
+  )
+    return (
+      <span className="ml-1 text-red-500">
+        leaderboard is&nbsp;{rows.length === 0 ? "does not exist" : "is empty"}
+      </span>
+    )
+
+  return rows && rows.length > 0 ? (
     <div
       className={`mt-5 w-full ${grow && "flex-grow"}`}
       style={{ height: height === undefined ? "100%" : `${height}px` }}
@@ -172,7 +212,7 @@ export default function FixedTable({
           {({ height, width }: Size) => (
             <FixedSizeList
               height={height}
-              itemCount={data.length}
+              itemCount={rows.length}
               itemSize={50}
               width={width}
               style={{ minWidth: minWidth ? minWidth : 0 }}
@@ -182,7 +222,7 @@ export default function FixedTable({
                   index={index}
                   style={style}
                   columns={columns}
-                  data={data}
+                  rows={rows}
                 />
               )}
             </FixedSizeList>
@@ -190,5 +230,7 @@ export default function FixedTable({
         </AutoSizer>
       </div>
     </div>
+  ) : (
+    <span className="ml-1 text-red-500">leaderboard is empty</span>
   )
 }

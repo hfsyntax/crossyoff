@@ -1,6 +1,5 @@
 User-Agent: *
 Allow: /
 Disallow: /submit_run
-Disallow: /api/refreshCache
 
 Sitemap: https://crossyoff.vercel.app/sitemap.xml

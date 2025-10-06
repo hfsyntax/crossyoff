@@ -1,7 +1,13 @@
 "use client"
 import type { HighscoreFormResult } from "@/types"
 import type { FormEvent } from "react"
-import { useRef, useState, useEffect, useActionState } from "react"
+import {
+  useRef,
+  useState,
+  useEffect,
+  useActionState,
+  startTransition,
+} from "react"
 import { handleSubmitRun } from "@/app/actions"
 import ReCAPTCHA from "react-google-recaptcha"
 
@@ -56,7 +62,7 @@ export default function SubmitRunHandler() {
         return setFormError("platform must be Mobile or PC")
       }
 
-      formAction(formData)
+      startTransition(() => formAction(formData))
     } catch (error) {
       console.error(error)
     }
@@ -69,6 +75,9 @@ export default function SubmitRunHandler() {
     if (formResponse?.error) setFormError(formResponse.error)
     if (formError && !formResponse?.error) setFormError("")
   }, [formResponse])
+
+  if (!process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY)
+    throw new Error("NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY missing!")
 
   return (
     <form ref={currentForm} onSubmit={setRecaptchaToken}>
@@ -148,7 +157,7 @@ export default function SubmitRunHandler() {
       />
       <ReCAPTCHA
         ref={recaptcha}
-        sitekey="6Leu4_UUAAAAAEmRqjfo2-g9z75Jc8JHAi7_D-LG"
+        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY}
         size="invisible"
       />
       {formError && <span className="font-bold text-red-500">{formError}</span>}

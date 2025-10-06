@@ -1,16 +1,35 @@
 "use cache"
 
-import { getPlatformTopPlayers } from "@/lib"
+import { unstable_cacheTag as cacheTag } from "next/cache"
 import Link from "next/link"
 import Table from "@/components/Table"
+import supabase from "@/lib/supabase"
 
 export const metadata = {
   title: "Mobile Rankings",
   description: "Lists the Crossy Road top highscores for mobile.",
 }
 
+async function getPlatformTopPlayers() {
+  "use cache"
+  cacheTag("crossy_road_records")
+
+  const { data, error } = await supabase
+    .from("crossy_road_records")
+    .select("rank, flag, name, score, date, titles, video_url, id")
+    .eq("platform", "mobile")
+    .order("rank", { ascending: true })
+
+  if (error) {
+    console.error(error)
+    return []
+  }
+
+  return data ?? []
+}
+
 export default async function Mobile() {
-  const players = await getPlatformTopPlayers("mobile")
+  const players = await getPlatformTopPlayers()
   return (
     <div className="relative left-0 mt-[150px] flex h-0 w-full flex-grow transform-none select-none flex-col overflow-auto font-sans xl:left-1/2 xl:w-[1200px] xl:-translate-x-1/2">
       <h1 className="mb-3 ml-1 mt-3 text-2xl sm:text-3xl xl:ml-0 xl:text-[32px]">

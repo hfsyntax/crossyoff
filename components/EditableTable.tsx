@@ -6,6 +6,7 @@ import {
   addPlayer,
   deleteLeaderboard,
   removePlayers,
+  updateNotes,
   updatePoints,
 } from "@/app/actions"
 import { faPlus, faTrash, faX } from "@fortawesome/free-solid-svg-icons"
@@ -40,6 +41,7 @@ function Row({
   checkedRows,
   pendingAction,
   onPointsChange,
+  onNotesChange,
   onCheckboxChange,
   onShowModal,
 }: {
@@ -50,6 +52,7 @@ function Row({
   checkedRows: Set<number>
   pendingAction: boolean
   onPointsChange: (rowId: number, field: string, value: string) => void
+  onNotesChange: (rowId: number, field: string, value: string) => void
   onCheckboxChange: (id: number) => void
   onShowModal: (username: string, rowId: number) => void
 }) {
@@ -68,7 +71,7 @@ function Row({
           index === 0 ? (
             <span
               key={`${field}_${row["table_id"]}_${row["row_id"]}`}
-              className={`relative flex-none ${field === "rank" && "pl-2"} ${field === "username" ? "w-3/5" : "w-1/5"} bg-slate-700 text-xs text-white sm:text-sm md:text-base lg:text-lg xl:text-xl`}
+              className={`relative flex-none ${field === "rank" && "pl-2"} ${field === "username" ? "w-2/5" : "w-1/5"} bg-slate-700 text-xs text-white sm:text-sm md:text-base lg:text-lg xl:text-xl`}
             >
               {columns[rowIndex]}
             </span>
@@ -92,19 +95,31 @@ function Row({
               </span>
             </div>
           ) : field === "points" ? (
+            <input
+              className="w-1/5 bg-transparent pl-2 text-xs text-black outline-none hover:bg-slate-400 focus:bg-slate-400 sm:text-sm md:text-base lg:text-lg xl:text-xl"
+              key={`${field}_${row["table_id"]}_${row["row_id"]}`}
+              defaultValue={row[field]}
+              disabled={pendingAction}
+              onBlur={(e) =>
+                onPointsChange(row["row_id"], field, e.target.value)
+              }
+            />
+          ) : field === "notes" ? (
             <div
-              className="flex w-1/5 flex-none gap-2"
+              className="flex h-full w-1/5 flex-none gap-2"
               key={`${field}_${row["table_id"]}_${row["row_id"]}`}
             >
-              <input
-                className="w-3/4 bg-transparent pl-2 text-xs text-black outline-none hover:bg-slate-400 focus:bg-slate-400 sm:text-sm md:text-base lg:text-lg xl:text-xl"
+              <textarea
+                name={`${row["row_id"]}_notes`}
+                className="box-border h-full w-full bg-transparent p-1 text-[8px] leading-[0.667rem] text-black outline-none hover:bg-slate-400 focus:bg-slate-400 md:text-[10px] md:text-xs md:leading-[0.833rem] lg:text-sm"
                 defaultValue={row[field]}
                 disabled={pendingAction}
+                spellCheck={false}
+                maxLength={1024}
                 onBlur={(e) =>
-                  onPointsChange(row["row_id"], field, e.target.value)
+                  onNotesChange(row["row_id"], field, e.target.value)
                 }
-              />
-
+              ></textarea>
               <FontAwesomeIcon
                 icon={faTrash}
                 size="xl"
@@ -114,7 +129,7 @@ function Row({
             </div>
           ) : (
             <div
-              className="relative flex w-3/5 flex-none items-center gap-2"
+              className="relative flex w-2/5 flex-none items-center gap-2"
               key={`${field}_${row["table_id"]}_${row["row_id"]}`}
             >
               <Image
@@ -160,6 +175,10 @@ export default function EditableTable({
     updatePoints,
     null,
   )
+  const [updateNotesResponse, notesAction, notesPending] = useActionState(
+    updateNotes,
+    null,
+  )
   const [addPlayerResponse, addAction, addPending] = useActionState(
     addPlayer,
     null,
@@ -198,6 +217,15 @@ export default function EditableTable({
         ),
       )
     startTransition(() => pointsAction({ rowId, points: parsed }))
+  }
+
+  const handleNotesChange = (rowId: number, field: string, value: string) => {
+    if (pendingAction || value.length > 1024) return
+    const oldValue = rows.find((row) => row.row_id === rowId)?.[
+      field as keyof CastlePlayer
+    ]
+    if (value === oldValue) return
+    startTransition(() => notesAction({ rowId, notes: value }))
   }
 
   const showSingleDeleteModal = (username: string, rowId: number) => {
@@ -315,6 +343,15 @@ export default function EditableTable({
         message: "",
       })
   }, [updatePointsResponse])
+
+  useEffect(() => {
+    if (updateNotesResponse?.error)
+      setFormResponse({
+        type: "update",
+        error: updateNotesResponse.error,
+        message: "",
+      })
+  }, [updateNotesResponse])
 
   useEffect(() => {
     if (deleteTableResponse?.success) setModalConfirm(null)
@@ -522,6 +559,7 @@ export default function EditableTable({
                       checkedRows={checkedRows}
                       pendingAction={pendingAction}
                       onPointsChange={handlePointsChange}
+                      onNotesChange={handleNotesChange}
                       onCheckboxChange={toggleCheckbox}
                       onShowModal={showSingleDeleteModal}
                     />

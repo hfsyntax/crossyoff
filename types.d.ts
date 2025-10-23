@@ -40,4 +40,5 @@ export type CastlePlayer = {
   username: string
   points: number
   avatar_url: string
+  notes: string
 }

@@ -443,6 +443,62 @@ export async function updatePoints(
   })
 }
 
+export async function updateNotes(
+  prevState: any,
+  { rowId, notes }: { rowId: number; notes: string },
+) {
+  const requestHeaders = await headers()
+  const referenceHeader = requestHeaders.get("referer")
+  const referencePath = referenceHeader
+    ? new URL(referenceHeader).pathname
+    : undefined
+  const tableName = referencePath
+    ? referencePath.split("/").slice(-1).join("")
+    : undefined
+
+  if (
+    !referencePath ||
+    !referencePath.startsWith("/crossy-road-castle/leaderboard/") ||
+    !tableName
+  )
+    return
+
+  const session = await getSession()
+  if (!session) return redirect("/")
+
+  if (notes.length > 1024)
+    return { error: "Notes must have a maximum of 1024 chars." }
+
+  const { data: tableExists, error: tableExistsError } = await supabase
+    .from("crossy_road_castle_tables")
+    .select("table_id")
+    .eq("table_name", tableName)
+    .maybeSingle()
+
+  if (tableExistsError) return { error: "Internal server error" }
+
+  if (!tableExists?.table_id) return { error: "The table has been deleted" }
+
+  const { data: updatedRow, error: updateRowError } = await supabase
+    .from("crossy_road_castle_data")
+    .update({ notes })
+    .eq("row_id", rowId)
+    .select("*")
+
+  if (updateRowError) return { error: "Internal server error" }
+
+  if (updatedRow.length === 0)
+    return { error: `Failed to update notes, the player was deleted.` }
+
+  revalidateTag(`crossy_road_castle_leaderboard_${tableName}`)
+
+  await supabase.channel("leaderboard-updates").send({
+    type: "broadcast",
+    event: "refresh",
+    payload: { leaderboard: tableName },
+  })
+}
+
 export async function deleteLeaderboard(
   prevState: any,
   tableId: number,

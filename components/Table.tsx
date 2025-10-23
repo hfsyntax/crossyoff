@@ -54,7 +54,7 @@ function Row({
           index === 0 || !fragmentColumns.includes(field) ? (
             <span
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
-              className={`relative inline-block text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl ${["Player", "Name", "Winner"].includes(columns[rowIndex]) ? "flex-[3] md:flex-[2]" : row[field] instanceof Date || columns[rowIndex] === "date" ? "flex-[2] md:flex-[1]" : columns[rowIndex] === "#" ? "flex-[0.5]" : "flex-[1]"} pl-2 ${
+              className={`relative inline-block ${field === "notes" && index > 0 ? "box-border h-full self-start overflow-auto p-1 text-[8px] leading-[0.667rem] md:text-[10px] md:text-xs md:leading-[0.833rem] lg:text-sm" : "text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"} ${["Player", "Name", "Winner"].includes(columns[rowIndex]) ? "flex-[3] md:flex-[2]" : row[field] instanceof Date || columns[rowIndex] === "date" ? "flex-[2] md:flex-[1]" : columns[rowIndex] === "#" ? "flex-[0.5]" : columns[rowIndex] === "player" ? "flex-[2]" : "flex-[1]"} pl-2 ${
                 index === 0
                   ? "bg-slate-700 text-white"
                   : row[field] === "Completed"
@@ -113,7 +113,7 @@ function Row({
           ) : (
             <div
               key={`${field}_${row["id"] ? row["id"] : row["tournament_number"] ? row["tournament_number"] : index}`}
-              className={`relative flex h-full ${field !== "username" ? "flex-[3] md:flex-[2]" : "flex-[1]"} items-center pl-2 leading-[50px]`}
+              className={`relative flex h-full ${field !== "username" ? "flex-[3] md:flex-[2]" : "flex-[2]"} items-center pl-2 leading-[50px]`}
             >
               <Image
                 width={50}

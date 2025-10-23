@@ -91,7 +91,7 @@ export default async function Page({
                   ? [{ ...filtered[0] }, ...filtered]
                   : [{ ...tableData.data[0] }, ...tableData.data]
               }
-              columns={["rank", "player", "points"]}
+              columns={["rank", "player", "points", "notes"]}
               tableEmpty={false}
             />
           ) : (
@@ -100,12 +100,12 @@ export default async function Page({
               {!query ? (
                 <FixedTable
                   data={[{ ...tableData.data[0] }, ...tableData.data]}
-                  columns={["rank", "player", "points"]}
+                  columns={["rank", "player", "points", "notes"]}
                 />
               ) : filtered.length > 0 ? (
                 <FixedTable
                   data={[{ ...filtered[0] }, ...filtered]}
-                  columns={["rank", "player", "points"]}
+                  columns={["rank", "player", "points", "notes"]}
                 />
               ) : (
                 <span className="ml-1 mt-3 font-bold text-red-500 xl:ml-0">
@@ -117,21 +117,27 @@ export default async function Page({
         ) : session ? (
           <EditableTable
             data={tableData.data}
-            columns={["rank", "player", "points"]}
+            columns={["rank", "player", "points", "notes"]}
             tableEmpty={true}
           />
         ) : (
-          <Table data={tableData.data} columns={["rank", "player", "points"]} />
+          <Table
+            data={tableData.data}
+            columns={["rank", "player", "points", "notes"]}
+          />
         )
       ) : tableData.data && session ? (
         <EditableTable
           data={tableData.data}
-          columns={["rank", "player", "points"]}
+          columns={["rank", "player", "points", "notes"]}
           tableEmpty={true}
         />
       ) : (
         tableData.data && (
-          <Table data={tableData.data} columns={["rank", "player", "points"]} />
+          <Table
+            data={tableData.data}
+            columns={["rank", "player", "points", "notes"]}
+          />
         )
       )}
     </div>

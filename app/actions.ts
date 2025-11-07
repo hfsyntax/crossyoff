@@ -51,7 +51,7 @@ async function getDiscordUserById(id: string) {
 
 async function getDiscordUserByUsername(username: string) {
   const discordUserResponse = await fetch(
-    `https://discord.com/api/v10/guilds/600865413890310155/members/search?query=${username}`,
+    `https://discord.com/api/v10/guilds/1436299210164011059/members/search?query=${username}`,
     {
       headers: {
         Authorization: `Bot ${process.env.BOT_TOKEN}`,
